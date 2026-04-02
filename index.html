@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jardín El Fresno | Coacalco</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --verde: #1B3A2D;
+    --verde-oscuro: #0D1F17;
+    --verde-medio: #2C5440;
+    --oro: #C9943F;
+    --oro-claro: #E8C97A;
+    --crema: #FAF6EE;
+    --crema-oscuro: #F0EDE5;
+    --marfil: #FFFDF9;
+    --texto: #1A1A1A;
+    --texto-suave: #4A4A4A;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--crema);
+    color: var(--texto);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--crema-oscuro); }
+  ::-webkit-scrollbar-thumb { background: var(--oro); border-radius: 3px; }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: transparent;
+    transition: background 0.4s, padding 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(13,31,23,0.96);
+    padding: 0.8rem 4rem;
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--oro-claro); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--oro-claro); }
+
+  /* ========== HERO ========== */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/587781379_17953820586044373_6261790226757951904_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=Mzc3MjUxNzI1MTIxMjYwMDY1NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4OTYwLnNkci5DMyJ9&_nc_ohc=psWX9QQuc7EQ7kNvwEYX9IE&_nc_oc=Adr8CTlxTcmzSXOX6F3elltNfi9XHlE0k3BpUSfKIz1hqwfaLswkKTHk1KRCrtgS1W-cSoJEyyuyo3SIdUu5fdmH&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=_0feaSR_aZkBZAMj9pV4mA&_nc_ss=7a32e&oh=00_Af36LtutQ_gD5thsN5OXhGG93OMETTCKle-xPCFSf7_Jyg&oe=69D49855');
+    background-size: cover;
+    background-position: center 40%;
+    transform: scale(1.05);
+    transition: transform 12s ease;
+  }
+  .hero-bg.loaded { transform: scale(1); }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(13,31,23,0.5) 0%, rgba(13,31,23,0.65) 60%, rgba(13,31,23,0.85) 100%);
+  }
+  .hero-content { position: relative; z-index: 2; padding: 2rem; }
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--oro);
+    color: var(--oro-claro);
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.45rem 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garant', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--oro-claro);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.7s forwards;
+  }
+  .hero-ctas {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.9s forwards;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--oro);
+    color: var(--verde-oscuro);
+    padding: 1rem 2.5rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--oro-claro); transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: #fff;
+    padding: 1rem 2.5rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .btn-outline:hover { border-color: var(--oro); background: rgba(201,148,63,0.1); }
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s 1.5s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--oro), transparent);
+    animation: scrollPulse 2s 1.5s infinite;
+  }
+
+  /* ========== SECCIONES ========== */
+  section { position: relative; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* Línea decorativa */
+  .deco-line {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .deco-line::before, .deco-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--oro);
+    opacity: 0.35;
+  }
+  .deco-icon {
+    color: var(--oro);
+    font-size: 1.1rem;
+    opacity: 0.7;
+  }
+
+  .section-tag {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--oro);
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+  .section-title {
+    font-family: 'Cormorant Garant', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 500;
+    color: var(--verde-oscuro);
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+  }
+  .section-title em { font-style: italic; color: var(--verde-medio); }
+  .section-body {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--texto-suave);
+    line-height: 1.8;
+    max-width: 560px;
+  }
+
+  /* ========== STATS STRIP ========== */
+  .stats-strip {
+    background: var(--verde-oscuro);
+    padding: 3.5rem 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 3rem;
+    font-weight: 500;
+    color: var(--oro-claro);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .stat-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+    margin: 0 auto;
+  }
+
+  /* ========== ABOUT ========== */
+  .about { padding: 8rem 0; background: var(--marfil); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .about-img-wrap {
+    position: relative;
+  }
+  .about-img {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    display: block;
+  }
+  .about-img-accent {
+    position: absolute;
+    bottom: -2.5rem;
+    right: -2.5rem;
+    width: 55%;
+    aspect-ratio: 1;
+    border: 8px solid var(--marfil);
+    background-image: url('https://instagram.fmex2-1.fna.fbcdn.net/v/t51.82787-15/640568416_17963966289044373_2571416612046433891_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=Mzg0MDQ2MzM5NDM0MDUzMDQwOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjk2MHg2NDAuc2RyLkMzIn0%3D&_nc_ohc=8idTssc5M0QQ7kNvwGFzKJu&_nc_oc=AdqVUQMH6quh-WYZzZ4ZXhITu13nSDIPPF1N6HmwjwJC4S57a1BBLdGjQofIjG-g5NF07VJ6FjiYRE2-tmpyhOTR&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-1.fna&_nc_gid=b3qEVU2C-wMybZpP3NpW8g&_nc_ss=7a32e&oh=00_Af3eH0vgHC6mCOGDU-K2_JEwYqZMad7I9_fdPx26PcMI5A&oe=69D48CF2');
+    background-size: cover;
+    background-position: center;
+  }
+  .about-text { padding-left: 1rem; }
+  .values-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .value-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--crema);
+    border-left: 3px solid var(--oro);
+  }
+  .value-icon { color: var(--oro); font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .value-text { font-size: 0.92rem; color: var(--texto-suave); line-height: 1.6; }
+  .value-text strong { display: block; color: var(--verde-oscuro); font-weight: 500; margin-bottom: 0.15rem; font-size: 0.95rem; }
+
+  /* ========== INCLUIDO ========== */
+  .incluido {
+    padding: 7rem 0;
+    background: var(--crema-oscuro);
+  }
+  .incluido-header { text-align: center; margin-bottom: 4rem; }
+  .incluido-header .section-body { max-width: 100%; }
+  .incluido-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .incluido-item {
+    background: var(--marfil);
+    padding: 1.5rem;
+    border-top: 2px solid var(--oro);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  .incl-icon { color: var(--oro); font-size: 1.2rem; flex-shrink: 0; }
+  .incl-label { font-size: 0.88rem; color: var(--texto-suave); line-height: 1.5; }
+  .incl-label strong { display: block; color: var(--verde); font-weight: 500; font-size: 0.92rem; margin-bottom: 0.1rem; }
+
+  /* ========== PAQUETES ========== */
+  .paquetes { padding: 8rem 0; background: var(--verde-oscuro); }
+  .paquetes-header { text-align: center; margin-bottom: 5rem; }
+  .paquetes-header .section-title { color: #fff; }
+  .paquetes-header .section-tag { color: var(--oro-claro); }
+  .paquetes-header .section-body { color: rgba(255,255,255,0.6); margin: 0 auto; }
+  .paquetes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: rgba(255,255,255,0.08);
+  }
+  .paquete-card {
+    background: var(--verde-oscuro);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .paquete-card:hover { background: var(--verde-medio); }
+  .paquete-card.featured {
+    background: var(--verde-medio);
+  }
+  .paquete-featured-badge {
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    background: var(--oro);
+    color: var(--verde-oscuro);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.35rem 1.5rem;
+  }
+  .paquete-name {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--oro-claro);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .paquete-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin: 1.5rem 0;
+  }
+  .price-currency {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.5);
+  }
+  .price-num {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 3.5rem;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+  }
+  .price-per {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.45);
+    align-self: flex-end;
+    margin-bottom: 0.3rem;
+  }
+  .paquete-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--oro);
+    opacity: 0.5;
+    margin: 1.5rem 0;
+  }
+  .paquete-comida {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+  .paquete-extras {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .paquete-extra-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.83rem;
+    color: rgba(255,255,255,0.65);
+  }
+  .check { color: var(--oro); font-size: 0.8rem; }
+  .paquete-cta {
+    display: block;
+    text-align: center;
+    border: 1px solid rgba(201,148,63,0.5);
+    color: var(--oro-claro);
+    padding: 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+  .paquete-cta:hover, .paquete-card.featured .paquete-cta {
+    background: var(--oro);
+    color: var(--verde-oscuro);
+    border-color: var(--oro);
+  }
+  .paquetes-note {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.35);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== JACUZZI ========== */
+  .jacuzzi {
+    padding: 8rem 0;
+    background: var(--marfil);
+  }
+  .jacuzzi-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .jacuzzi-img-wrap { position: relative; }
+  .jacuzzi-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+  }
+  .jacuzzi-float {
+    position: absolute;
+    bottom: 2rem;
+    right: -3rem;
+    background: var(--verde-oscuro);
+    padding: 2rem 2.5rem;
+    color: #fff;
+    min-width: 200px;
+  }
+  .jacuzzi-float-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--oro-claro);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .jacuzzi-float-price {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #fff;
+    display: block;
+    line-height: 1.1;
+  }
+  .jacuzzi-float-sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    display: block;
+    margin-top: 0.3rem;
+  }
+  .jacuzzi-features { margin: 2.5rem 0; display: flex; flex-direction: column; gap: 0.7rem; }
+  .jac-feat {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+  }
+  .jac-feat-dot {
+    width: 6px; height: 6px;
+    background: var(--oro);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .jacuzzi-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .jac-option {
+    border: 1px solid rgba(27,58,45,0.2);
+    padding: 1.5rem;
+  }
+  .jac-option-name {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--oro);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .jac-option-price {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--verde-oscuro);
+    display: block;
+  }
+  .jac-option-personas {
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    margin-top: 0.2rem;
+    display: block;
+  }
+
+  /* ========== PEDIDAS ========== */
+  .pedidas {
+    padding: 8rem 0;
+    background-image: url('https://instagram.fmex2-1.fna.fbcdn.net/v/t51.82787-15/620864233_17960483769044373_1502276994248175810_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=MzgxNzQ4MTcyNTIxNjI2NDQ1OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4OTYwLnNkci5DMyJ9&_nc_ohc=cIzPjdr6VSoQ7kNvwEpqNtG&_nc_oc=Adpn3pitcsVot9LIKgk_SwQU2e_BOUfrsx5t3fyCWwinv16ruexjWHASk_nmFN_szZpHG5PFXOnScNHgVpYgZomh&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-1.fna&_nc_gid=b3qEVU2C-wMybZpP3NpW8g&_nc_ss=7a32e&oh=00_Af2xZCSTK__oN10wEW7_uDRKOQ3PK7A27msDtPXiznzjQw&oe=69D4A6B0');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+  .pedidas-overlay {
+    position: absolute; inset: 0;
+    background: rgba(13,31,23,0.78);
+  }
+  .pedidas-content { position: relative; z-index: 2; text-align: center; }
+  .pedidas-content .section-title { color: #fff; }
+  .pedidas-content .section-tag { color: var(--oro-claro); }
+  .pedidas-content .section-body { color: rgba(255,255,255,0.7); max-width: 550px; margin: 0 auto 3rem; }
+  .pedidas-options {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .pedida-opt {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,148,63,0.3);
+    padding: 2rem 3rem;
+    text-align: center;
+    backdrop-filter: blur(4px);
+  }
+  .pedida-opt-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--oro-claro);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .pedida-opt-price {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: #fff;
+    display: block;
+  }
+  .pedida-opt-detail {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  /* ========== GALERIA ========== */
+  .galeria { padding: 7rem 0; background: var(--crema-oscuro); }
+  .galeria-header { text-align: center; margin-bottom: 3rem; }
+  .instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-bottom: 2.5rem;
+  }
+  .insta-cell {
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .insta-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+    display: block;
+  }
+  .insta-cell:hover img { transform: scale(1.07); }
+  .insta-cell-overlay {
+    position: absolute; inset: 0;
+    background: rgba(13,31,23,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .insta-cell:hover .insta-cell-overlay {
+    background: rgba(13,31,23,0.55);
+  }
+  .insta-ig-icon {
+    color: #fff;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .insta-cell:hover .insta-ig-icon { opacity: 1; }
+  .galeria-footer {
+    text-align: center;
+  }
+  .insta-follow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--verde);
+    color: var(--verde-oscuro);
+    padding: 0.9rem 2.5rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+  .insta-follow-btn:hover {
+    background: var(--verde-oscuro);
+    color: #fff;
+    border-color: var(--verde-oscuro);
+  }
+
+  /* ========== CONTACTO ========== */
+  .contacto {
+    padding: 8rem 0;
+    background: var(--verde-oscuro);
+  }
+  .contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .contacto-info .section-title { color: #fff; }
+  .contacto-info .section-tag { color: var(--oro-claro); }
+  .contacto-info .section-body { color: rgba(255,255,255,0.6); }
+  .contacto-items { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .contacto-item {
+    display: flex; align-items: flex-start; gap: 1.2rem;
+  }
+  .contacto-icon {
+    width: 44px; height: 44px;
+    border: 1px solid rgba(201,148,63,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--oro-claro);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .contacto-item-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .contacto-item-value {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.85);
+  }
+  .contacto-item-value a { color: var(--oro-claro); text-decoration: none; }
+  .contacto-horario {
+    margin-top: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem;
+  }
+  .horario-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--oro-claro);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .horario-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.88rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .horario-row:last-child { border-bottom: none; }
+  .horario-day { color: rgba(255,255,255,0.5); }
+  .horario-time { color: rgba(255,255,255,0.85); }
+
+  /* Map */
+  .contacto-map { position: relative; }
+  .map-embed {
+    width: 100%;
+    height: 420px;
+    border: none;
+    display: block;
+    filter: grayscale(20%) contrast(1.05);
+  }
+  .map-cta-wrap {
+    margin-top: 1.5rem;
+  }
+  .map-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid rgba(201,148,63,0.4);
+    color: var(--oro-claro);
+    padding: 0.85rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+  .map-cta:hover { background: var(--oro); color: var(--verde-oscuro); border-color: var(--oro); }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: #050E09;
+    padding: 3rem 0;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garant', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 0.5rem;
+  }
+  .footer-logo span { color: var(--oro); }
+  .footer-tagline {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+  .footer-redes {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .footer-red {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-red:hover { color: var(--oro-claro); }
+  .footer-copy {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.2);
+  }
+  .footer-divider {
+    width: 60px;
+    height: 1px;
+    background: rgba(201,148,63,0.25);
+    margin: 2rem auto;
+  }
+
+  /* ========== WHATSAPP ========== */
+  .wa-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    width: 58px; height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .wa-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+  .wa-icon { width: 28px; height: 28px; fill: #fff; }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    nav.scrolled { padding: 0.8rem 2rem; }
+    .nav-links { display: none; }
+    .about-grid, .jacuzzi-inner, .contacto-grid, .paquetes-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-img-accent { display: none; }
+    .jacuzzi-float { position: static; margin-top: 1rem; right: auto; bottom: auto; }
+    .pedidas-options { flex-direction: column; align-items: center; }
+    .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.8rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .paquetes-grid { grid-template-columns: 1fr; gap: 2px; }
+    .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">El <span>Fresno</span></a>
+  <ul class="nav-links">
+    <li><a href="#paquetes">Paquetes</a></li>
+    <li><a href="#jacuzzi">Jacuzzi</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-badge">Coacalco, Estado de México</span>
+    <h1>El mejor lugar para<br><em>sus eventos</em></h1>
+    <p class="hero-sub">Jardín y salón premium · Hasta 350 personas · Servicios integrales</p>
+    <div class="hero-ctas">
+      <a href="https://wa.me/5215511735378?text=Hola,%20me%20gustaría%20cotizar%20un%20evento%20en%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">
+        Cotizar por WhatsApp
+      </a>
+      <a href="#paquetes" class="btn-outline">Ver paquetes</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Descubrir
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-num">350</div>
+        <div class="stat-label">Personas máximo</div>
+      </div>
+      <div>
+        <div class="stat-num">6h</div>
+        <div class="stat-label">Duración de evento</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Paquetes disponibles</div>
+      </div>
+      <div>
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Descorche libre</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="nosotros">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <img 
+          src="https://instagram.fmex2-1.fna.fbcdn.net/v/t51.82787-15/630131917_17963080146044373_3154563974745899334_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=MzgzNDY2NjE2OTcyMzEzNDI5NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjk2MHg2NDAuc2RyLkMzIn0%3D&_nc_ohc=3xj9cCuqs7MQ7kNvwGpbZiK&_nc_oc=AdqAdzZaF94vyZKI5qVY0mKelIVy4Ceg5DA7jwYk3pMAzzyjZiwkB7Y48Kqye2_w64okayGheYztmAmCBeVkTz7A&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-1.fna&_nc_gid=b3qEVU2C-wMybZpP3NpW8g&_nc_ss=7a32e&oh=00_Af1eC1dJEFcC6LvcBEHtfnq1MUP2MNZduv73PeDbV27AMw&oe=69D48745" 
+          alt="Jardín El Fresno" 
+          class="about-img"
+        />
+        <div class="about-img-accent"></div>
+      </div>
+      <div class="about-text reveal reveal-delay-2">
+        <span class="section-tag">Sobre nosotros</span>
+        <h2 class="section-title">Un espacio pensado para <em>celebrar</em></h2>
+        <p class="section-body">Somos un jardín con instalaciones premium en Coacalco, diseñado para que el anfitrión disfrute su celebración sin preocuparse por la logística. Usted llega, nosotros nos encargamos de todo.</p>
+        <div class="values-list">
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div class="value-text">
+              <strong>El Organizador Impecable</strong>
+              Confianza que se demuestra con lo que entregamos, no con lo que prometemos.
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div class="value-text">
+              <strong>Sin complicaciones para usted</strong>
+              Desde el montaje hasta la salida, cada detalle es nuestra responsabilidad.
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div class="value-text">
+              <strong>Momentos que no se olvidan</strong>
+              Instalaciones iluminadas, servicio completo y atención personalizada.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUIDO EN TODOS -->
+<section class="incluido" id="incluido">
+  <div class="container">
+    <div class="incluido-header reveal">
+      <span class="section-tag">Incluido en todos los paquetes</span>
+      <h2 class="section-title">Lo dejamos todo listo</h2>
+    </div>
+    <div class="incluido-grid">
+      <div class="incluido-item reveal">
+        <span class="incl-icon">🎵</span>
+        <div class="incl-label"><strong>DJ profesional</strong>Pantallas, luces y sonido (6 horas)</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-1">
+        <span class="incl-icon">🪑</span>
+        <div class="incl-label"><strong>Mobiliario completo</strong>Sillas Tiffany, mantelería y vajilla</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-2">
+        <span class="incl-icon">🤖</span>
+        <div class="incl-label"><strong>Batucada robot LED</strong>Personaje sorpresa y globos (1 hora)</div>
+      </div>
+      <div class="incluido-item reveal">
+        <span class="incl-icon">🥤</span>
+        <div class="incl-label"><strong>Bebidas ilimitadas</strong>Aguas de sabor, refrescos, hielo y café</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-1">
+        <span class="incl-icon">🌿</span>
+        <div class="incl-label"><strong>Jardín iluminado</strong>Pista, salas lounge y área de juegos</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-2">
+        <span class="incl-icon">🍰</span>
+        <div class="incl-label"><strong>Mesa de pastel iluminada</strong>Carretas para mesa de dulces</div>
+      </div>
+      <div class="incluido-item reveal">
+        <span class="incl-icon">🔥</span>
+        <div class="incl-label"><strong>Calentadores y planta de luz</strong>Comodidad garantizada en todo momento</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-1">
+        <span class="incl-icon">🧑‍🍳</span>
+        <div class="incl-label"><strong>Meseros y personal</strong>1 mesero por cada 2 mesas + acomodador</div>
+      </div>
+      <div class="incluido-item reveal reveal-delay-2">
+        <span class="incl-icon">🍾</span>
+        <div class="incl-label"><strong>Descorche libre</strong>Sin costo adicional</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAQUETES -->
+<section class="paquetes" id="paquetes">
+  <div class="container">
+    <div class="paquetes-header reveal">
+      <span class="section-tag">Paquetes</span>
+      <h2 class="section-title">Su celebración a su medida</h2>
+      <p class="section-body">Mínimo 100 personas. De 50 a 99 asistentes, precio con cargo adicional de $100 por persona.</p>
+    </div>
+    <div class="paquetes-grid">
+      <!-- BASICO -->
+      <div class="paquete-card reveal">
+        <p class="paquete-name">Básico</p>
+        <div class="paquete-price">
+          <span class="price-currency">$</span>
+          <span class="price-num">750</span>
+          <span class="price-per">/persona</span>
+        </div>
+        <div class="paquete-divider"></div>
+        <p class="paquete-comida">Taquiza buffet: carnitas, mixiotes o birria con consomé. Menú infantil: pizza.</p>
+        <div class="paquete-extras">
+          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
+          <span class="paquete-extra-item"><span class="check">✓</span> 1 hora Cabina 360° Pro</span>
+        </div>
+        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Básico%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
+      </div>
+      <!-- DORADO -->
+      <div class="paquete-card featured reveal reveal-delay-1">
+        <span class="paquete-featured-badge">El más solicitado</span>
+        <p class="paquete-name" style="margin-top:1.5rem;">Dorado</p>
+        <div class="paquete-price">
+          <span class="price-currency">$</span>
+          <span class="price-num">850</span>
+          <span class="price-per">/persona</span>
+        </div>
+        <div class="paquete-divider"></div>
+        <p class="paquete-comida">Taquiza buffet ampliada: carnitas, mixiotes, chamorros o alambres. Menú infantil: pizza o baguette.</p>
+        <div class="paquete-extras">
+          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
+          <span class="paquete-extra-item"><span class="check">✓</span> 2 horas Cabina 360° Pro</span>
+        </div>
+        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Dorado%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
+      </div>
+      <!-- PLATINUM -->
+      <div class="paquete-card reveal reveal-delay-2">
+        <p class="paquete-name">Platinum</p>
+        <div class="paquete-price">
+          <span class="price-currency">$</span>
+          <span class="price-num">950</span>
+          <span class="price-per">/persona</span>
+        </div>
+        <div class="paquete-divider"></div>
+        <p class="paquete-comida">Menú de 3 tiempos, paella o parrillada de cortes. Menú infantil: pizza, nuggets o hamburguesa con papas.</p>
+        <div class="paquete-extras">
+          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
+          <span class="paquete-extra-item"><span class="check">✓</span> 2 horas Cabina 360° Pro</span>
+          <span class="paquete-extra-item"><span class="check">✓</span> Coctelería de bienvenida</span>
+          <span class="paquete-extra-item"><span class="check">✓</span> Toro mecánico o inflable gigante</span>
+        </div>
+        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Platinum%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
+      </div>
+    </div>
+    <p class="paquetes-note">También disponible: Renta de jardín sin alimentos desde $40,000 · Incluye DJ y personal · Base 100 personas</p>
+  </div>
+</section>
+
+<!-- JACUZZI -->
+<section class="jacuzzi" id="jacuzzi">
+  <div class="container">
+    <div class="jacuzzi-inner">
+      <div class="jacuzzi-img-wrap reveal">
+        <img 
+          src="https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/641780712_17964463086044373_7291661838915483434_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=Mzg0MzU0NTM0MDA3MTI3Mzg3MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjk2MHg2NDAuc2RyLkMzIn0%3D&_nc_ohc=UWxcmrMzGrYQ7kNvwGqPyp0&_nc_oc=Adr1Eh2HpZ5bQMZbm0zAsAGLhrNHaZ5AvFF3_CFYG2SsXUTZojTYKp_2I8Ge28lFMlfJg6TeYKrcMt0CJF5DQ57U&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=G-8Sk6DChD2qCRLNclkUhw&_nc_ss=7a32e&oh=00_Af0uiN1Y0KwYDBtLV6b6aUpiLeg22dmlZfDBh5u3D5Kc6A&oe=69D4AAD3"
+          alt="Paquete Jacuzzi El Fresno"
+          class="jacuzzi-img"
+        />
+        <div class="jacuzzi-float">
+          <span class="jacuzzi-float-label">Desde</span>
+          <span class="jacuzzi-float-price">$9,000</span>
+          <span class="jacuzzi-float-sub">20 personas · 6 horas</span>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <span class="section-tag">Paquete Jacuzzi</span>
+        <h2 class="section-title">Una experiencia <em>exclusiva</em></h2>
+        <p class="section-body">Para reuniones privadas, despedidas o simplemente una noche diferente con su grupo. Privacidad total, ambiente único.</p>
+        <div class="jacuzzi-features">
+          <div class="jac-feat"><div class="jac-feat-dot"></div>Meseros y servicio refrigerado</div>
+          <div class="jac-feat"><div class="jac-feat-dot"></div>Toallas y pantuflas incluidas</div>
+          <div class="jac-feat"><div class="jac-feat-dot"></div>Regadera y sanitarios privativos</div>
+          <div class="jac-feat"><div class="jac-feat-dot"></div>WiFi · Pantalla · Luces</div>
+          <div class="jac-feat"><div class="jac-feat-dot"></div>Sonido Bose de alta fidelidad</div>
+          <div class="jac-feat"><div class="jac-feat-dot"></div>Descorche libre (presentación en plástico o lata)</div>
+        </div>
+        <div class="jacuzzi-options">
+          <div class="jac-option">
+            <span class="jac-option-name">Básico</span>
+            <span class="jac-option-price">$9,000</span>
+            <span class="jac-option-personas">Hasta 20 personas</span>
+          </div>
+          <div class="jac-option">
+            <span class="jac-option-name">Ampliado</span>
+            <span class="jac-option-price">$16,500</span>
+            <span class="jac-option-personas">Hasta 45 personas</span>
+          </div>
+        </div>
+        <div style="margin-top: 2rem;">
+          <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Jacuzzi%20de%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">Apartar mi fecha</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PEDIDAS DE MANO -->
+<section class="pedidas" id="pedidas">
+  <div class="pedidas-overlay"></div>
+  <div class="container">
+    <div class="pedidas-content reveal">
+      <span class="section-tag">Momentos íntimos</span>
+      <h2 class="section-title">Pedidas de mano y<br>eventos privados</h2>
+      <p class="section-body">Le ayudamos a que todo salga perfecto. Espacio exclusivo, decoración a su medida y cena especial para dos.</p>
+      <div class="pedidas-options">
+        <div class="pedida-opt">
+          <span class="pedida-opt-label">Espacio</span>
+          <span class="pedida-opt-price">Desde $2,500</span>
+          <span class="pedida-opt-detail">Privacidad total garantizada</span>
+        </div>
+        <div class="pedida-opt">
+          <span class="pedida-opt-label">Decoración</span>
+          <span class="pedida-opt-price">Desde $8,000</span>
+          <span class="pedida-opt-detail">Personalizada para su momento</span>
+        </div>
+        <div class="pedida-opt">
+          <span class="pedida-opt-label">Cena especial</span>
+          <span class="pedida-opt-price">$9,500</span>
+          <span class="pedida-opt-detail">Menú 3 tiempos o charcutería con vino</span>
+        </div>
+      </div>
+      <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20organizar%20una%20pedida%20de%20mano%20en%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">Planear mi momento especial</a>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="galeria" id="galeria">
+  <div class="container">
+    <div class="galeria-header reveal">
+      <span class="section-tag">Galería</span>
+      <h2 class="section-title">Así se vive <em>El Fresno</em></h2>
+      <p class="section-body" style="margin: 0 auto; max-width: 450px;">Eventos reales en nuestras instalaciones. El lugar queda igual que en las fotos.</p>
+    </div>
+    <div class="instagram-grid reveal">
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-1.fna.fbcdn.net/v/t51.82787-15/583194988_17953479801044373_3883229533823933377_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzc3MDE1OTkzNjU2ODI5MjUzMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4OTYwLnNkci5DMyJ9&_nc_ohc=kb2PkL5aAOkQ7kNvwFgTaLd&_nc_oc=AdqHjFZ7JvWPIZdI8ucvk0KxUpEbpNVs59sPjH4pR3Rl1HQyJBtR07Ob9QNID-NThbxGord-TJpWXpx2KQ-GQWry&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-1.fna&_nc_gid=_0feaSR_aZkBZAMj9pV4mA&_nc_ss=7a32e&oh=00_Af1FlvY820BxTK_wrSye6fRGnvFZvHrRbwHoqla39j6jig&oe=69D49A89" alt="Jardín El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/657237525_17968673874044373_5929635718288335814_n.jpg?stp=dst-jpg_e35_s720x720_tt6&_nc_cat=101&ig_cache_key=Mzg2NjU1NTA4NTA1MzA5NTgzMw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjk2MHg2NDAuc2RyLkMzIn0%3D&_nc_ohc=tTyCL17URbMQ7kNvwEzM95U&_nc_oc=AdpH92kb1rPtiDp8JHpWrQhWDEAq7x2MuxfwMBM4Q6r92h-EMiIg-lTAmswjUop4wo8x8m9SF0j_klTevTykKF7u&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=G-8Sk6DChD2qCRLNclkUhw&_nc_ss=7a32e&oh=00_Af0o9cHu58khjh77jDkUBW0oltSGnhtywVXuGRuMiko5mw&oe=69D48965" alt="Evento El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/576536876_17952594723044373_8234117289744042530_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzc2MzYzNzIyMTAzMjE2Njg2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4OTYwLnNkci5DMyJ9&_nc_ohc=k0L-9IfX7oYQ7kNvwGEmTCm&_nc_oc=AdqaDrGNfAS1E3ZRhaPlpjRDWSZ9UlY53pjklaIZxqRWZqe5ICjQmEfSlFbfWtvfE4qGyPsfhs9g9USHAC_xjgII&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=L6RyXfA8aLclWnNdTSDqtA&_nc_ss=7a32e&oh=00_Af1iX3iGdKG8F92x2oNc9DOeYwzqvdMFOcO5R6Jslx23xg&oe=69D48FFF" alt="Pista de baile El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-1.fna.fbcdn.net/v/t51.82787-15/651005687_17965908036044373_347823766404556863_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=Mzg1MjAzMjI1ODUxNDUxMTk1NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjk2MHg2NDAuc2RyLkMzIn0%3D&_nc_ohc=cMI13I-cxl8Q7kNvwEWaDIa&_nc_oc=Adopl5D_Way7ORMG_ErF0_uKaJ-PozK2a_y9Gdm6AzNyNm-8gIu7G48UkKwjuRDulsIJv9wYZTq07sYNWDkOEaqJ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-1.fna&_nc_gid=G-8Sk6DChD2qCRLNclkUhw&_nc_ss=7a32e&oh=00_Af3x5pTrW0xRrDxKHCbsvHwJYRu7Abh2yYmTGa9NZFD2pA&oe=69D48B63" alt="Mesa de dulces El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/537117254_17943694251044373_3292914369660565116_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzcwNTExMTIzODg0MDMyNzcwNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4NzIwLnNkci5DMyJ9&_nc_ohc=rPxAn9vvEnkQ7kNvwGN_EzT&_nc_oc=AdqKhDTn-8NFoYMhzBdbeH1uaeyALJDNANgcll5dz2Kf0sV3r4gZGEvbEKk1H1G3-bas_FlBG4vplrQb9uUaruo_&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=FDA8PbPWcK0kHb_4fZdRWQ&_nc_ss=7a32e&oh=00_Af3R2zA5uKaxrrEisotBECfLGcK4adf4fmrkE_5wHDBlTA&oe=69D4A390" alt="DJ El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
+        <img src="https://instagram.fmex2-2.fna.fbcdn.net/v/t51.82787-15/611283878_17958691872044373_5239342989901209877_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzgwNTE0MzczNTg5ODczOTEwOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4OTYwLnNkci5DMyJ9&_nc_ohc=-XdInAM4cLwQ7kNvwGKRNkW&_nc_oc=Adqz55s42lPqSRY5sdHIMxiaGQMq8U1tmBNRn7cfq3JhtObFnNuND2tVyU2AN4Xvp3SUx7SjSouXcfGaeKczJQwB&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fmex2-2.fna&_nc_gid=b3qEVU2C-wMybZpP3NpW8g&_nc_ss=7a32e&oh=00_Af1ChTp9HsImcuYCEhtQp-retoppDP9TVGNgsY7bwiFniQ&oe=69D493EA" alt="Mesa adornada El Fresno" loading="lazy"/>
+        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
+      </a>
+    </div>
+    <div class="galeria-footer reveal">
+      <a href="https://www.instagram.com/elfresnocoacalco/" target="_blank" class="insta-follow-btn">
+        Ver más en Instagram &nbsp;@ElFresnoCoacalco
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="container">
+    <div class="contacto-grid">
+      <div class="contacto-info reveal">
+        <span class="section-tag">Contacto</span>
+        <h2 class="section-title">Con gusto le<br><em>atendemos</em></h2>
+        <p class="section-body">Anticipo de $5,000 para apartar su fecha. Aceptamos efectivo, transferencia y tarjeta. Facturamos.</p>
+        <div class="contacto-items">
+          <div class="contacto-item">
+            <div class="contacto-icon">📍</div>
+            <div>
+              <span class="contacto-item-label">Dirección</span>
+              <span class="contacto-item-value">Calle Pedro Moreno, Col. Zacuauhtitla,<br>Coacalco, Estado de México</span>
+            </div>
+          </div>
+          <div class="contacto-item">
+            <div class="contacto-icon">💬</div>
+            <div>
+              <span class="contacto-item-label">WhatsApp</span>
+              <span class="contacto-item-value"><a href="https://wa.me/5215511735378" target="_blank">55 1173 5378</a></span>
+            </div>
+          </div>
+          <div class="contacto-item">
+            <div class="contacto-icon">📱</div>
+            <div>
+              <span class="contacto-item-label">Redes sociales</span>
+              <span class="contacto-item-value"><a href="https://www.instagram.com/elfresnocoacalco/" target="_blank">@ElFresnoCoacalco</a> en todas las plataformas</span>
+            </div>
+          </div>
+        </div>
+        <div class="contacto-horario">
+          <span class="horario-title">Horario de visitas</span>
+          <div class="horario-row">
+            <span class="horario-day">Lunes — Viernes</span>
+            <span class="horario-time">10:00 – 17:30 h</span>
+          </div>
+          <div class="horario-row">
+            <span class="horario-day">Fines de semana</span>
+            <span class="horario-time">Con cita previa vía WhatsApp</span>
+          </div>
+        </div>
+      </div>
+      <div class="contacto-map reveal reveal-delay-2">
+        <iframe 
+          class="map-embed"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.0!2d-98.9!3d19.65!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zSmFyZMOtbiBFbCBGcmVzbm8!5e0!3m2!1ses!2smx!4v1680000000000!5m2!1ses!2smx"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación Jardín El Fresno"
+        ></iframe>
+        <div class="map-cta-wrap">
+          <a href="https://maps.app.goo.gl/m4KDfbmcNTRW4BWBA" target="_blank" class="map-cta">
+            Cómo llegar &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">El <span>Fresno</span></div>
+  <p class="footer-tagline">El mejor lugar para sus eventos sociales</p>
+  <div class="footer-redes">
+    <a href="https://www.instagram.com/elfresnocoacalco/" target="_blank" class="footer-red">Instagram</a>
+    <a href="https://www.facebook.com/elfresnocoacalco/" target="_blank" class="footer-red">Facebook</a>
+    <a href="https://www.tiktok.com/@elfresnocoacalco" target="_blank" class="footer-red">TikTok</a>
+    <a href="https://wa.me/5215511735378" target="_blank" class="footer-red">WhatsApp</a>
+  </div>
+  <div class="footer-divider"></div>
+  <p class="footer-copy">Jardín El Fresno &copy; 2025 · Coacalco, Estado de México · @ElFresnoCoacalco</p>
+</footer>
+
+<!-- WHATSAPP BUTTON -->
+<a href="https://wa.me/5215511735378?text=Hola,%20me%20gustaría%20cotizar%20un%20evento%20en%20Jardín%20El%20Fresno" class="wa-btn" target="_blank" title="Chatear por WhatsApp">
+  <svg class="wa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const heroBg = document.getElementById('heroBg');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+  });
+
+  setTimeout(() => { heroBg.classList.add('loaded'); }, 100);
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
