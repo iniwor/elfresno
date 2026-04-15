@@ -1,1380 +1,842 @@
 <!DOCTYPE html>
-<!-- 
-=== IMÁGENES DE DRIVE — REFERENCIA DE ASIGNACIÓN ===
-Formato usado: https://lh3.googleusercontent.com/d/FILE_ID
-
-SLOTS ACTIVOS (11 imágenes):
-  [1]  14MDIPN054vRsqc8vsrOa6SGm5gH6zrOt  → Hero principal (fondo)
-  [2]  17ZlyIgNlEVRm6RYnvyW6soU7lW5Pp4UV  → About: acento decorativo (cuadro flotante)
-  [3]  18eElohGW26tzF2gGfyOk1rnuTupY8rLH  → Pedidas de mano: fondo con parallax
-  [4]  18sEi-WF4UwUVBlTUl148DXBRpNfYkw6O  → About: foto principal vertical
-  [5]  1Ah9vmc-noA1i9dNpcp46u95Hs_Mlqg7k  → Sección Jacuzzi: foto principal
-  [6]  1CrC7B-bMxxw3W9vB3A53rHbW9hfBBOiU  → Galería celda 1
-  [7]  1HW-cqe9HjecPu41F9PGkUTQlGyDMiycj  → Galería celda 2
-  [8]  1Kn_ua_HAEqoI_OV77-42VB4nKaldZeqG  → Galería celda 3
-  [9]  1RQhnyk_pnCt8ONrUJDg-s4ezsVSeQm-o  → Galería celda 4
-  [10] 1RUHjdXriopr_KQdEHErSs-ldc1PUmX5B  → Galería celda 5
-  [11] 1cQxSeTBSRF6owVzESIoKOvnPIJl10y6w  → Galería celda 6
-
-IMÁGENES DISPONIBLES SIN SLOT (8 sobrantes — intercambia según contexto):
-  [12] 1dFrjWuTHPc8xwN9KV-fj3gN1YR1VoW6m
-  [13] 1ijSjoLD95LwaM_p2kIZYF2XWrevkhMAj
-  [14] 1jXo1HM227fxThuETZTo_V2h1zT6hyV0k
-  [15] 1luLlG60-oV3UmLPui-TpTSgckSxozEmB
-  [16] 1nnTwc9aGfae7dvm6jDyu1WInZaFSVdDr
-  [17] 1nzlF-GbHD4kmdCm1ranh4RzVse3PJn7O
-  [18] 1pWImwRpm-18_QpI66I5r4dj8T_tTbCxK
-  [19] 1vpNl2UBGX-WDd0rPxPftDzLnG8yxM7EC
-
-NOTA: Los archivos de Drive deben estar compartidos como "Cualquiera con el enlace puede ver".
--->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jardín El Fresno | Coacalco</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Mis Finanzas</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --verde: #1B3A2D;
-    --verde-oscuro: #0D1F17;
-    --verde-medio: #2C5440;
-    --oro: #C9943F;
-    --oro-claro: #E8C97A;
-    --crema: #FAF6EE;
-    --crema-oscuro: #F0EDE5;
-    --marfil: #FFFDF9;
-    --texto: #1A1A1A;
-    --texto-suave: #4A4A4A;
-  }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Jost', sans-serif;
-    background: var(--crema);
-    color: var(--texto);
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--crema-oscuro); }
-  ::-webkit-scrollbar-thumb { background: var(--oro); border-radius: 3px; }
-
-  /* ========== NAV ========== */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.2rem 4rem;
-    background: transparent;
-    transition: background 0.4s, padding 0.4s;
-  }
-  nav.scrolled {
-    background: rgba(13,31,23,0.96);
-    padding: 0.8rem 4rem;
-    backdrop-filter: blur(8px);
-  }
-  .nav-logo {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.6rem;
-    font-weight: 500;
-    color: #fff;
-    letter-spacing: 0.03em;
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--oro-claro); }
-  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-  .nav-links a {
-    font-size: 0.82rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.85);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--oro-claro); }
-
-  /* ========== HERO ========== */
-  .hero {
-    position: relative;
-    height: 100vh;
-    min-height: 700px;
-    display: flex; align-items: center; justify-content: center;
-    text-align: center;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background-image: url('https://lh3.googleusercontent.com/d/1pAZOrr9_tYmPVRf7xeFeQ7AAii125m9Y');
-    background-size: cover;
-    background-position: center 40%;
-    transform: scale(1.05);
-    transition: transform 12s ease;
-  }
-  .hero-bg.loaded { transform: scale(1); }
-  .hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(13,31,23,0.5) 0%, rgba(13,31,23,0.65) 60%, rgba(13,31,23,0.85) 100%);
-  }
-  .hero-content { position: relative; z-index: 2; padding: 2rem; }
-  .hero-badge {
-    display: inline-block;
-    border: 1px solid var(--oro);
-    color: var(--oro-claro);
-    font-size: 0.72rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    padding: 0.45rem 1.5rem;
-    margin-bottom: 2rem;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.8s 0.3s forwards;
-  }
-  .hero h1 {
-    font-family: 'Cormorant Garant', serif;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    font-weight: 500;
-    color: #fff;
-    line-height: 1.05;
-    letter-spacing: -0.01em;
-    margin-bottom: 1.2rem;
-    opacity: 0;
-    transform: translateY(25px);
-    animation: fadeUp 0.9s 0.5s forwards;
-  }
-  .hero h1 em {
-    font-style: italic;
-    color: var(--oro-claro);
-  }
-  .hero-sub {
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: rgba(255,255,255,0.8);
-    letter-spacing: 0.05em;
-    margin-bottom: 3rem;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.8s 0.7s forwards;
-  }
-  .hero-ctas {
-    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.8s 0.9s forwards;
-  }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    background: var(--oro);
-    color: var(--verde-oscuro);
-    padding: 1rem 2.5rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.25s, transform 0.2s;
-  }
-  .btn-primary:hover { background: var(--oro-claro); transform: translateY(-2px); }
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    border: 1px solid rgba(255,255,255,0.5);
-    color: #fff;
-    padding: 1rem 2.5rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: border-color 0.25s, background 0.25s;
-  }
-  .btn-outline:hover { border-color: var(--oro); background: rgba(201,148,63,0.1); }
-  .hero-scroll {
-    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-    color: rgba(255,255,255,0.5);
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: fadeIn 1s 1.5s forwards;
-  }
-  .scroll-line {
-    width: 1px; height: 40px;
-    background: linear-gradient(to bottom, var(--oro), transparent);
-    animation: scrollPulse 2s 1.5s infinite;
-  }
-
-  /* ========== SECCIONES ========== */
-  section { position: relative; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
-
-  /* Línea decorativa */
-  .deco-line {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .deco-line::before, .deco-line::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--oro);
-    opacity: 0.35;
-  }
-  .deco-icon {
-    color: var(--oro);
-    font-size: 1.1rem;
-    opacity: 0.7;
-  }
-
-  .section-tag {
-    display: block;
-    font-size: 0.72rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--oro);
-    margin-bottom: 1rem;
-    font-weight: 400;
-  }
-  .section-title {
-    font-family: 'Cormorant Garant', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 500;
-    color: var(--verde-oscuro);
-    line-height: 1.15;
-    margin-bottom: 1.2rem;
-  }
-  .section-title em { font-style: italic; color: var(--verde-medio); }
-  .section-body {
-    font-size: 1rem;
-    font-weight: 300;
-    color: var(--texto-suave);
-    line-height: 1.8;
-    max-width: 560px;
-  }
-
-  /* ========== STATS STRIP ========== */
-  .stats-strip {
-    background: var(--verde-oscuro);
-    padding: 3.5rem 0;
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    text-align: center;
-  }
-  .stat-num {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 3rem;
-    font-weight: 500;
-    color: var(--oro-claro);
-    line-height: 1;
-    margin-bottom: 0.4rem;
-  }
-  .stat-label {
-    font-size: 0.78rem;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-  }
-  .stat-divider {
-    width: 1px;
-    background: rgba(255,255,255,0.15);
-    margin: 0 auto;
-  }
-
-  /* ========== ABOUT ========== */
-  .about { padding: 8rem 0; background: var(--marfil); }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: center;
-  }
-  .about-img-wrap {
-    position: relative;
-  }
-  .about-img {
-    width: 100%;
-    aspect-ratio: 4/5;
-    object-fit: cover;
-    display: block;
-  }
-  .about-img-accent {
-    position: absolute;
-    bottom: -2.5rem;
-    right: -2.5rem;
-    width: 55%;
-    aspect-ratio: 1;
-    border: 8px solid var(--marfil);
-    background-image: url('https://lh3.googleusercontent.com/d/1luLlG60-oV3UmLPui-TpTSgckSxozEmB');
-    background-size: cover;
-    background-position: center;
-  }
-  .about-text { padding-left: 1rem; }
-  .values-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
-  .value-item {
-    display: flex; align-items: flex-start; gap: 1rem;
-    padding: 1rem 1.2rem;
-    background: var(--crema);
-    border-left: 3px solid var(--oro);
-  }
-  .value-icon { color: var(--oro); font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
-  .value-text { font-size: 0.92rem; color: var(--texto-suave); line-height: 1.6; }
-  .value-text strong { display: block; color: var(--verde-oscuro); font-weight: 500; margin-bottom: 0.15rem; font-size: 0.95rem; }
-
-  /* ========== INCLUIDO ========== */
-  .incluido {
-    padding: 7rem 0;
-    background: var(--crema-oscuro);
-  }
-  .incluido-header { text-align: center; margin-bottom: 4rem; }
-  .incluido-header .section-body { max-width: 100%; }
-  .incluido-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-  .incluido-item {
-    background: var(--marfil);
-    padding: 1.5rem;
-    border-top: 2px solid var(--oro);
-    display: flex;
-    align-items: flex-start;
-    gap: 0.8rem;
-  }
-  .incl-icon { color: var(--oro); font-size: 1.2rem; flex-shrink: 0; }
-  .incl-label { font-size: 0.88rem; color: var(--texto-suave); line-height: 1.5; }
-  .incl-label strong { display: block; color: var(--verde); font-weight: 500; font-size: 0.92rem; margin-bottom: 0.1rem; }
-
-  /* ========== PAQUETES ========== */
-  .paquetes { padding: 8rem 0; background: var(--verde-oscuro); }
-  .paquetes-header { text-align: center; margin-bottom: 5rem; }
-  .paquetes-header .section-title { color: #fff; }
-  .paquetes-header .section-tag { color: var(--oro-claro); }
-  .paquetes-header .section-body { color: rgba(255,255,255,0.6); margin: 0 auto; }
-  .paquetes-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5px;
-    background: rgba(255,255,255,0.08);
-  }
-  .paquete-card {
-    background: var(--verde-oscuro);
-    padding: 3rem 2.5rem;
-    position: relative;
-    transition: background 0.3s;
-  }
-  .paquete-card:hover { background: var(--verde-medio); }
-  .paquete-card.featured {
-    background: var(--verde-medio);
-  }
-  .paquete-featured-badge {
-    position: absolute;
-    top: 0; left: 50%; transform: translateX(-50%);
-    background: var(--oro);
-    color: var(--verde-oscuro);
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 0.35rem 1.5rem;
-  }
-  .paquete-name {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--oro-claro);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .paquete-price {
-    display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    margin: 1.5rem 0;
-  }
-  .price-currency {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.5);
-  }
-  .price-num {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 3.5rem;
-    font-weight: 500;
-    color: #fff;
-    line-height: 1;
-  }
-  .price-per {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.45);
-    align-self: flex-end;
-    margin-bottom: 0.3rem;
-  }
-  .paquete-divider {
-    width: 40px;
-    height: 1px;
-    background: var(--oro);
-    opacity: 0.5;
-    margin: 1.5rem 0;
-  }
-  .paquete-comida {
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-  }
-  .paquete-extras {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .paquete-extra-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.83rem;
-    color: rgba(255,255,255,0.65);
-  }
-  .check { color: var(--oro); font-size: 0.8rem; }
-  .paquete-cta {
-    display: block;
-    text-align: center;
-    border: 1px solid rgba(201,148,63,0.5);
-    color: var(--oro-claro);
-    padding: 0.9rem;
-    font-size: 0.78rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.25s;
-  }
-  .paquete-cta:hover, .paquete-card.featured .paquete-cta {
-    background: var(--oro);
-    color: var(--verde-oscuro);
-    border-color: var(--oro);
-  }
-  .paquetes-note {
-    text-align: center;
-    margin-top: 3rem;
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.35);
-    font-weight: 300;
-    letter-spacing: 0.05em;
-  }
-
-  /* ========== JACUZZI ========== */
-  .jacuzzi {
-    padding: 8rem 0;
-    background: var(--marfil);
-  }
-  .jacuzzi-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: center;
-  }
-  .jacuzzi-img-wrap { position: relative; }
-  .jacuzzi-img {
-    width: 100%;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-  }
-  .jacuzzi-float {
-    position: absolute;
-    bottom: 2rem;
-    right: -3rem;
-    background: var(--verde-oscuro);
-    padding: 2rem 2.5rem;
-    color: #fff;
-    min-width: 200px;
-  }
-  .jacuzzi-float-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--oro-claro);
-    display: block;
-    margin-bottom: 0.3rem;
-  }
-  .jacuzzi-float-price {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 2.2rem;
-    font-weight: 500;
-    color: #fff;
-    display: block;
-    line-height: 1.1;
-  }
-  .jacuzzi-float-sub {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.5);
-    display: block;
-    margin-top: 0.3rem;
-  }
-  .jacuzzi-features { margin: 2.5rem 0; display: flex; flex-direction: column; gap: 0.7rem; }
-  .jac-feat {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-size: 0.9rem;
-    color: var(--texto-suave);
-  }
-  .jac-feat-dot {
-    width: 6px; height: 6px;
-    background: var(--oro);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .jacuzzi-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  .jac-option {
-    border: 1px solid rgba(27,58,45,0.2);
-    padding: 1.5rem;
-  }
-  .jac-option-name {
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--oro);
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-  .jac-option-price {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.8rem;
-    font-weight: 500;
-    color: var(--verde-oscuro);
-    display: block;
-  }
-  .jac-option-personas {
-    font-size: 0.8rem;
-    color: var(--texto-suave);
-    margin-top: 0.2rem;
-    display: block;
-  }
-
-  /* ========== PEDIDAS ========== */
-  .pedidas {
-    padding: 8rem 0;
-    background-image: url('https://lh3.googleusercontent.com/d/18eElohGW26tzF2gGfyOk1rnuTupY8rLH');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    position: relative;
-  }
-  .pedidas-overlay {
-    position: absolute; inset: 0;
-    background: rgba(13,31,23,0.78);
-  }
-  .pedidas-content { position: relative; z-index: 2; text-align: center; }
-  .pedidas-content .section-title { color: #fff; }
-  .pedidas-content .section-tag { color: var(--oro-claro); }
-  .pedidas-content .section-body { color: rgba(255,255,255,0.7); max-width: 550px; margin: 0 auto 3rem; }
-  .pedidas-options {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
-  }
-  .pedida-opt {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(201,148,63,0.3);
-    padding: 2rem 3rem;
-    text-align: center;
-    backdrop-filter: blur(4px);
-  }
-  .pedida-opt-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--oro-claro);
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .pedida-opt-price {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 2.4rem;
-    font-weight: 500;
-    color: #fff;
-    display: block;
-  }
-  .pedida-opt-detail {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.5);
-    display: block;
-    margin-top: 0.3rem;
-  }
-
-  /* ========== GALERIA ========== */
-  .galeria { padding: 7rem 0; background: var(--crema-oscuro); }
-  .galeria-header { text-align: center; margin-bottom: 3rem; }
-  .instagram-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    margin-bottom: 2.5rem;
-  }
-  .insta-cell {
-    aspect-ratio: 1;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-  }
-  .insta-cell img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-    display: block;
-  }
-  .insta-cell:hover img { transform: scale(1.07); }
-  .insta-cell-overlay {
-    position: absolute; inset: 0;
-    background: rgba(13,31,23,0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s;
-  }
-  .insta-cell:hover .insta-cell-overlay {
-    background: rgba(13,31,23,0.55);
-  }
-  .insta-ig-icon {
-    color: #fff;
-    font-size: 1.6rem;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .insta-cell:hover .insta-ig-icon { opacity: 1; }
-  .galeria-footer {
-    text-align: center;
-  }
-  .insta-follow-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    border: 1px solid var(--verde);
-    color: var(--verde-oscuro);
-    padding: 0.9rem 2.5rem;
-    font-size: 0.82rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.25s;
-  }
-  .insta-follow-btn:hover {
-    background: var(--verde-oscuro);
-    color: #fff;
-    border-color: var(--verde-oscuro);
-  }
-
-  /* ========== CONTACTO ========== */
-  .contacto {
-    padding: 8rem 0;
-    background: var(--verde-oscuro);
-  }
-  .contacto-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-  }
-  .contacto-info .section-title { color: #fff; }
-  .contacto-info .section-tag { color: var(--oro-claro); }
-  .contacto-info .section-body { color: rgba(255,255,255,0.6); }
-  .contacto-items { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
-  .contacto-item {
-    display: flex; align-items: flex-start; gap: 1.2rem;
-  }
-  .contacto-icon {
-    width: 44px; height: 44px;
-    border: 1px solid rgba(201,148,63,0.3);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--oro-claro);
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-  .contacto-item-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    display: block;
-    margin-bottom: 0.2rem;
-  }
-  .contacto-item-value {
-    font-size: 0.95rem;
-    color: rgba(255,255,255,0.85);
-  }
-  .contacto-item-value a { color: var(--oro-claro); text-decoration: none; }
-  .contacto-horario {
-    margin-top: 2.5rem;
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 1.5rem;
-  }
-  .horario-title {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--oro-claro);
-    margin-bottom: 1rem;
-    display: block;
-  }
-  .horario-row {
-    display: flex; justify-content: space-between;
-    font-size: 0.88rem;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .horario-row:last-child { border-bottom: none; }
-  .horario-day { color: rgba(255,255,255,0.5); }
-  .horario-time { color: rgba(255,255,255,0.85); }
-
-  /* Map */
-  .contacto-map { position: relative; }
-  .map-embed {
-    width: 100%;
-    height: 420px;
-    border: none;
-    display: block;
-    filter: grayscale(20%) contrast(1.05);
-  }
-  .map-cta-wrap {
-    margin-top: 1.5rem;
-  }
-  .map-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    border: 1px solid rgba(201,148,63,0.4);
-    color: var(--oro-claro);
-    padding: 0.85rem 2rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.25s;
-  }
-  .map-cta:hover { background: var(--oro); color: var(--verde-oscuro); border-color: var(--oro); }
-
-  /* ========== FOOTER ========== */
-  footer {
-    background: #050E09;
-    padding: 3rem 0;
-    text-align: center;
-  }
-  .footer-logo {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 2rem;
-    font-weight: 500;
-    color: rgba(255,255,255,0.8);
-    margin-bottom: 0.5rem;
-  }
-  .footer-logo span { color: var(--oro); }
-  .footer-tagline {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 2rem;
-    font-weight: 300;
-  }
-  .footer-redes {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .footer-red {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .footer-red:hover { color: var(--oro-claro); }
-  .footer-copy {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.2);
-  }
-  .footer-divider {
-    width: 60px;
-    height: 1px;
-    background: rgba(201,148,63,0.25);
-    margin: 2rem auto;
-  }
-
-  /* ========== WHATSAPP ========== */
-  .wa-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 200;
-    width: 58px; height: 58px;
-    background: #25D366;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(37,211,102,0.35);
-    transition: transform 0.25s, box-shadow 0.25s;
-  }
-  .wa-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
-  .wa-icon { width: 28px; height: 28px; fill: #fff; }
-
-  /* ========== ANIMATIONS ========== */
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-
-  /* ========== RESPONSIVE ========== */
-  @media (max-width: 900px) {
-    nav { padding: 1.2rem 2rem; }
-    nav.scrolled { padding: 0.8rem 2rem; }
-    .nav-links { display: none; }
-    .about-grid, .jacuzzi-inner, .contacto-grid, .paquetes-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .about-img-accent { display: none; }
-    .jacuzzi-float { position: static; margin-top: 1rem; right: auto; bottom: auto; }
-    .pedidas-options { flex-direction: column; align-items: center; }
-    .instagram-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 600px) {
-    .hero h1 { font-size: 2.8rem; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .paquetes-grid { grid-template-columns: 1fr; gap: 2px; }
-    .instagram-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* ========== VOLVER ARRIBA ========== */
-  .btt-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 5rem; /* offset to not overlap WhatsApp (58px btn + 2rem gap + small margin) */
-    z-index: 200;
-    width: 44px; height: 44px;
-    background: var(--verde-oscuro);
-    border: 1px solid rgba(201,148,63,0.45);
-    border-radius: 0;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    text-decoration: none;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.3s, transform 0.3s, background 0.25s, border-color 0.25s;
-    pointer-events: none;
-  }
-  .btt-btn.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  .btt-btn:hover {
-    background: var(--verde-medio);
-    border-color: var(--oro);
-  }
-  .btt-arrow {
-    width: 14px; height: 14px;
-    border-left: 2px solid var(--oro-claro);
-    border-top: 2px solid var(--oro-claro);
-    transform: rotate(45deg) translate(2px, 2px);
-    display: block;
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--light:#94a3b8;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--purple:#8b5cf6;--yellow:#f59e0b;--F:'DM Sans',system-ui,sans-serif}
+body{font-family:var(--F);background:var(--bg);color:var(--text);min-height:100vh}
+input,select,button{font-family:var(--F)}
+.hdr{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:20px 24px 16px;border-bottom:3px solid var(--blue)}
+.hdr-in{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.logo{font-size:22px;font-weight:800;color:#fff}
+.hdr-date{font-size:13px;color:var(--light);text-transform:capitalize}
+nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;padding:0 24px;overflow-x:auto;max-width:1148px;margin:0 auto}
+.nav-btn{background:none;border:none;border-bottom:3px solid transparent;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:all .2s}
+.nav-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:20px 24px}
+footer{text-align:center;padding:16px;font-size:11px;color:var(--light);border-top:1px solid var(--border);margin-top:24px}
+.section{display:none}.section.active{display:block}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.sec-title{font-size:20px;font-weight:700}
+.btn{border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn-p{background:var(--blue);color:#fff}
+.btn-s{background:#f1f5f9;color:#334155;border:1px solid var(--border)}
+.btn-g{background:#f1f5f9;color:var(--muted)}
+.btn-green{background:var(--green);color:#fff}
+.btn-purple{background:var(--purple);color:#fff}
+.card{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid var(--border);margin-bottom:16px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.kpi{background:var(--card);border-radius:8px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.kpi-label{font-size:11px;color:var(--light);font-weight:500;display:block;margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.fw{display:flex;flex-direction:column;gap:3px}
+.lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.inp{padding:7px 10px;border-radius:6px;border:1px solid #d1d5db;font-size:13px;color:var(--text);outline:none;background:#fff;transition:border .2s}
+.inp:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,99,235,.15)}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f1f5f9;padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid #f1f5f9;text-align:center;white-space:nowrap}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:3px}
+.b-green{background:#dcfce7;color:#15803d}.b-red{background:#fee2e2;color:#b91c1c}
+.mtag{font-size:10px;font-weight:600;background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:4px}
+.ib{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.6}
+.ib:hover{opacity:1}
+.bar-bg{background:#f1f5f9;border-radius:4px;height:7px;width:100%;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.cnt-badge{background:var(--blue);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:2px}
+.toast{position:fixed;top:12px;right:12px;background:#1e3a5f;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:si .3s ease}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.rec-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;background:#fafbfc}
+.full{grid-column:1/-1}
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:16px}
+.login-box{background:var(--card);border-radius:12px;padding:32px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.08);max-width:360px;width:90%;text-align:center}
+.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.sync-ok{background:#16a34a}.sync-off{background:#dc2626}.sync-load{background:#f59e0b}
+@keyframes si{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fi{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@media(max-width:768px){.grid2{grid-template-columns:1fr}.fg{grid-template-columns:1fr 1fr}.sec-hdr{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">El <span>Fresno</span></a>
-  <ul class="nav-links">
-    <li><a href="#paquetes">Paquetes</a></li>
-    <li><a href="#jacuzzi">Jacuzzi</a></li>
-    <li><a href="#galeria">Galería</a></li>
-    <li><a href="#contacto">Contacto</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg" id="heroBg"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <span class="hero-badge">Coacalco, Estado de México</span>
-    <h1>El mejor lugar para<br><em>sus eventos</em></h1>
-    <p class="hero-sub">Jardín y salón premium · Hasta 350 personas · Servicios integrales</p>
-    <div class="hero-ctas">
-      <a href="https://wa.me/5215511735378?text=Hola,%20me%20gustaría%20cotizar%20un%20evento%20en%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">
-        Cotizar por WhatsApp
-      </a>
-      <a href="#paquetes" class="btn-outline">Ver paquetes</a>
-    </div>
-  </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Descubrir
-  </div>
-</section>
-
-<!-- STATS STRIP -->
-<div class="stats-strip">
-  <div class="container">
-    <div class="stats-grid">
-      <div>
-        <div class="stat-num">350</div>
-        <div class="stat-label">Personas máximo</div>
-      </div>
-      <div>
-        <div class="stat-num">6h</div>
-        <div class="stat-label">Duración de evento</div>
-      </div>
-      <div>
-        <div class="stat-num">3</div>
-        <div class="stat-label">Paquetes disponibles</div>
-      </div>
-      <div>
-        <div class="stat-num">∞</div>
-        <div class="stat-label">Descorche libre</div>
-      </div>
-    </div>
+<!-- LOGIN -->
+<div id="login" class="login-wrap">
+  <div class="login-box">
+    <div style="font-size:48px;margin-bottom:12px">💰</div>
+    <h1 style="font-size:24px;font-weight:800;margin-bottom:4px">Mis Finanzas</h1>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px">Ingresa tu PIN para acceder</p>
+    <input type="password" id="pin-input" class="inp" placeholder="PIN (4+ dígitos)" maxlength="8"
+      style="width:100%;text-align:center;font-size:18px;letter-spacing:8px;padding:12px" 
+      onkeydown="if(event.key==='Enter')tryLogin()">
+    <button class="btn btn-p" style="width:100%;margin-top:12px;padding:12px;font-size:15px" onclick="tryLogin()">Entrar</button>
+    <p id="login-err" style="color:var(--red);font-size:12px;margin-top:8px;display:none">PIN incorrecto o muy corto</p>
+    <p style="color:var(--light);font-size:11px;margin-top:16px">La primera vez que entres, tu PIN se registra automáticamente.</p>
   </div>
 </div>
 
-<!-- ABOUT -->
-<section class="about" id="nosotros">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-img-wrap reveal">
-        <img 
-          src="https://lh3.googleusercontent.com/d/1jXo1HM227fxThuETZTo_V2h1zT6hyV0k" 
-          alt="Jardín El Fresno" 
-          class="about-img"
-        />
-        <div class="about-img-accent"></div>
-      </div>
-      <div class="about-text reveal reveal-delay-2">
-        <span class="section-tag">Sobre nosotros</span>
-        <h2 class="section-title">Un espacio pensado para <em>celebrar</em></h2>
-        <p class="section-body">Somos un jardín con instalaciones premium en Coacalco, diseñado para que el anfitrión disfrute su celebración sin preocuparse por la logística. Usted llega, nosotros nos encargamos de todo.</p>
-        <div class="values-list">
-          <div class="value-item">
-            <span class="value-icon">✦</span>
-            <div class="value-text">
-              <strong>El Organizador Impecable</strong>
-              Confianza que se demuestra con lo que entregamos, no con lo que prometemos.
-            </div>
-          </div>
-          <div class="value-item">
-            <span class="value-icon">✦</span>
-            <div class="value-text">
-              <strong>Sin complicaciones para usted</strong>
-              Desde el montaje hasta la salida, cada detalle es nuestra responsabilidad.
-            </div>
-          </div>
-          <div class="value-item">
-            <span class="value-icon">✦</span>
-            <div class="value-text">
-              <strong>Momentos que no se olvidan</strong>
-              Instalaciones iluminadas, servicio completo y atención personalizada.
-            </div>
-          </div>
-        </div>
-      </div>
+<!-- APP -->
+<div id="app" style="display:none">
+  <header class="hdr"><div class="hdr-in">
+    <h1 class="logo">💰 Mis Finanzas</h1>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="sync-status" style="font-size:12px;color:var(--light)"><span class="sync-dot sync-load"></span>Conectando...</span>
+      <span class="hdr-date" id="hdr-date"></span>
     </div>
-  </div>
-</section>
-
-<!-- INCLUIDO EN TODOS -->
-<section class="incluido" id="incluido">
-  <div class="container">
-    <div class="incluido-header reveal">
-      <span class="section-tag">Incluido en todos los paquetes</span>
-      <h2 class="section-title">Lo dejamos todo listo</h2>
-    </div>
-    <div class="incluido-grid">
-      <div class="incluido-item reveal">
-        <span class="incl-icon">🎵</span>
-        <div class="incl-label"><strong>DJ profesional</strong>Pantallas, luces y sonido (6 horas)</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-1">
-        <span class="incl-icon">🪑</span>
-        <div class="incl-label"><strong>Mobiliario completo</strong>Sillas Tiffany, mantelería y vajilla</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-2">
-        <span class="incl-icon">🤖</span>
-        <div class="incl-label"><strong>Batucada robot LED</strong>Personaje sorpresa y globos (1 hora)</div>
-      </div>
-      <div class="incluido-item reveal">
-        <span class="incl-icon">🥤</span>
-        <div class="incl-label"><strong>Bebidas ilimitadas</strong>Aguas de sabor, refrescos, hielo y café</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-1">
-        <span class="incl-icon">🌿</span>
-        <div class="incl-label"><strong>Jardín iluminado</strong>Pista, salas lounge y área de juegos</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-2">
-        <span class="incl-icon">🍰</span>
-        <div class="incl-label"><strong>Mesa de pastel iluminada</strong>Carretas para mesa de dulces</div>
-      </div>
-      <div class="incluido-item reveal">
-        <span class="incl-icon">🔥</span>
-        <div class="incl-label"><strong>Calentadores y planta de luz</strong>Comodidad garantizada en todo momento</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-1">
-        <span class="incl-icon">🧑‍🍳</span>
-        <div class="incl-label"><strong>Meseros y personal</strong>1 mesero por cada 2 mesas + acomodador</div>
-      </div>
-      <div class="incluido-item reveal reveal-delay-2">
-        <span class="incl-icon">🍾</span>
-        <div class="incl-label"><strong>Descorche libre</strong>Sin costo adicional</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PAQUETES -->
-<section class="paquetes" id="paquetes">
-  <div class="container">
-    <div class="paquetes-header reveal">
-      <span class="section-tag">Paquetes</span>
-      <h2 class="section-title">Su celebración a su medida</h2>
-      <p class="section-body">Mínimo 100 personas. De 50 a 99 asistentes, precio con cargo adicional de $100 por persona.</p>
-    </div>
-    <div class="paquetes-grid">
-      <!-- BASICO -->
-      <div class="paquete-card reveal">
-        <p class="paquete-name">Básico</p>
-        <div class="paquete-price">
-          <span class="price-currency">$</span>
-          <span class="price-num">750</span>
-          <span class="price-per">/persona</span>
-        </div>
-        <div class="paquete-divider"></div>
-        <p class="paquete-comida">Taquiza buffet: carnitas, mixiotes o birria con consomé. Menú infantil: pizza.</p>
-        <div class="paquete-extras">
-          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
-          <span class="paquete-extra-item"><span class="check">✓</span> 1 hora Cabina 360° Pro</span>
-        </div>
-        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Básico%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
-      </div>
-      <!-- DORADO -->
-      <div class="paquete-card featured reveal reveal-delay-1">
-        <span class="paquete-featured-badge">El más solicitado</span>
-        <p class="paquete-name" style="margin-top:1.5rem;">Dorado</p>
-        <div class="paquete-price">
-          <span class="price-currency">$</span>
-          <span class="price-num">850</span>
-          <span class="price-per">/persona</span>
-        </div>
-        <div class="paquete-divider"></div>
-        <p class="paquete-comida">Taquiza buffet ampliada: carnitas, mixiotes, chamorros o alambres. Menú infantil: pizza o baguette.</p>
-        <div class="paquete-extras">
-          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
-          <span class="paquete-extra-item"><span class="check">✓</span> 2 horas Cabina 360° Pro</span>
-        </div>
-        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Dorado%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
-      </div>
-      <!-- PLATINUM -->
-      <div class="paquete-card reveal reveal-delay-2">
-        <p class="paquete-name">Platinum</p>
-        <div class="paquete-price">
-          <span class="price-currency">$</span>
-          <span class="price-num">950</span>
-          <span class="price-per">/persona</span>
-        </div>
-        <div class="paquete-divider"></div>
-        <p class="paquete-comida">Menú de 3 tiempos, paella o parrillada de cortes. Menú infantil: pizza, nuggets o hamburguesa con papas.</p>
-        <div class="paquete-extras">
-          <span class="paquete-extra-item"><span class="check">✓</span> Todo lo incluido en todos los paquetes</span>
-          <span class="paquete-extra-item"><span class="check">✓</span> 2 horas Cabina 360° Pro</span>
-          <span class="paquete-extra-item"><span class="check">✓</span> Coctelería de bienvenida</span>
-          <span class="paquete-extra-item"><span class="check">✓</span> Toro mecánico o inflable gigante</span>
-        </div>
-        <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Platinum%20de%20Jardín%20El%20Fresno" class="paquete-cta" target="_blank">Cotizar este paquete</a>
-      </div>
-    </div>
-    <p class="paquetes-note">También disponible: Renta de jardín sin alimentos desde $40,000 · Incluye DJ y personal · Base 100 personas</p>
-  </div>
-</section>
-
-<!-- JACUZZI -->
-<section class="jacuzzi" id="jacuzzi">
-  <div class="container">
-    <div class="jacuzzi-inner">
-      <div class="jacuzzi-img-wrap reveal">
-        <img 
-          src="https://lh3.googleusercontent.com/d/1RUHjdXriopr_KQdEHErSs-ldc1PUmX5B"
-          alt="Paquete Jacuzzi El Fresno"
-          class="jacuzzi-img"
-        />
-        <div class="jacuzzi-float">
-          <span class="jacuzzi-float-label">Desde</span>
-          <span class="jacuzzi-float-price">$9,000</span>
-          <span class="jacuzzi-float-sub">20 personas · 6 horas</span>
-        </div>
-      </div>
-      <div class="reveal reveal-delay-2">
-        <span class="section-tag">Paquete Jacuzzi</span>
-        <h2 class="section-title">Una experiencia <em>exclusiva</em></h2>
-        <p class="section-body">Para reuniones privadas, despedidas o simplemente una noche diferente con su grupo. Privacidad total, ambiente único.</p>
-        <div class="jacuzzi-features">
-          <div class="jac-feat"><div class="jac-feat-dot"></div>Meseros y servicio refrigerado</div>
-          <div class="jac-feat"><div class="jac-feat-dot"></div>Toallas y pantuflas incluidas</div>
-          <div class="jac-feat"><div class="jac-feat-dot"></div>Regadera y sanitarios privativos</div>
-          <div class="jac-feat"><div class="jac-feat-dot"></div>WiFi · Pantalla · Luces</div>
-          <div class="jac-feat"><div class="jac-feat-dot"></div>Sonido Bose de alta fidelidad</div>
-          <div class="jac-feat"><div class="jac-feat-dot"></div>Descorche libre (presentación en plástico o lata)</div>
-        </div>
-        <div class="jacuzzi-options">
-          <div class="jac-option">
-            <span class="jac-option-name">Básico</span>
-            <span class="jac-option-price">$9,000</span>
-            <span class="jac-option-personas">Hasta 20 personas</span>
-          </div>
-          <div class="jac-option">
-            <span class="jac-option-name">Ampliado</span>
-            <span class="jac-option-price">$16,500</span>
-            <span class="jac-option-personas">Hasta 45 personas</span>
-          </div>
-        </div>
-        <div style="margin-top: 2rem;">
-          <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20el%20Paquete%20Jacuzzi%20de%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">Apartar mi fecha</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PEDIDAS DE MANO -->
-<section class="pedidas" id="pedidas">
-  <div class="pedidas-overlay"></div>
-  <div class="container">
-    <div class="pedidas-content reveal">
-      <span class="section-tag">Momentos íntimos</span>
-      <h2 class="section-title">Pedidas de mano y<br>eventos privados</h2>
-      <p class="section-body">Le ayudamos a que todo salga perfecto. Espacio exclusivo, decoración a su medida y cena especial para dos.</p>
-      <div class="pedidas-options">
-        <div class="pedida-opt">
-          <span class="pedida-opt-label">Espacio</span>
-          <span class="pedida-opt-price">Desde $2,500</span>
-          <span class="pedida-opt-detail">Privacidad total garantizada</span>
-        </div>
-        <div class="pedida-opt">
-          <span class="pedida-opt-label">Decoración</span>
-          <span class="pedida-opt-price">Desde $8,000</span>
-          <span class="pedida-opt-detail">Personalizada para su momento</span>
-        </div>
-        <div class="pedida-opt">
-          <span class="pedida-opt-label">Cena especial</span>
-          <span class="pedida-opt-price">$9,500</span>
-          <span class="pedida-opt-detail">Menú 3 tiempos o charcutería con vino</span>
-        </div>
-      </div>
-      <a href="https://wa.me/5215511735378?text=Hola,%20me%20interesa%20organizar%20una%20pedida%20de%20mano%20en%20Jardín%20El%20Fresno" class="btn-primary" target="_blank">Planear mi momento especial</a>
-    </div>
-  </div>
-</section>
-
-<!-- GALERÍA -->
-<section class="galeria" id="galeria">
-  <div class="container">
-    <div class="galeria-header reveal">
-      <span class="section-tag">Galería</span>
-      <h2 class="section-title">Así se vive <em>El Fresno</em></h2>
-      <p class="section-body" style="margin: 0 auto; max-width: 450px;">Eventos reales en nuestras instalaciones. El lugar queda igual que en las fotos.</p>
-    </div>
-    <div class="instagram-grid reveal">
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1CrC7B-bMxxw3W9vB3A53rHbW9hfBBOiU" alt="Jardín El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1HW-cqe9HjecPu41F9PGkUTQlGyDMiycj" alt="Evento El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1Kn_ua_HAEqoI_OV77-42VB4nKaldZeqG" alt="Pista de baile El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1RQhnyk_pnCt8ONrUJDg-s4ezsVSeQm-o" alt="Mesa de dulces El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1ijSjoLD95LwaM_p2kIZYF2XWrevkhMAj" alt="DJ El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-      <a class="insta-cell" href="https://www.instagram.com/elfresnocoacalco/" target="_blank">
-        <img src="https://lh3.googleusercontent.com/d/1cQxSeTBSRF6owVzESIoKOvnPIJl10y6w" alt="Mesa adornada El Fresno" loading="lazy"/>
-        <div class="insta-cell-overlay"><span class="insta-ig-icon">📷</span></div>
-      </a>
-    </div>
-    <div class="galeria-footer reveal">
-      <a href="https://www.instagram.com/elfresnocoacalco/" target="_blank" class="insta-follow-btn">
-        Ver más en Instagram &nbsp;@ElFresnoCoacalco
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACTO -->
-<section class="contacto" id="contacto">
-  <div class="container">
-    <div class="contacto-grid">
-      <div class="contacto-info reveal">
-        <span class="section-tag">Contacto</span>
-        <h2 class="section-title">Con gusto le<br><em>atendemos</em></h2>
-        <p class="section-body">Anticipo de $5,000 para apartar su fecha. Aceptamos efectivo, transferencia y tarjeta. Facturamos.</p>
-        <div class="contacto-items">
-          <div class="contacto-item">
-            <div class="contacto-icon">📍</div>
-            <div>
-              <span class="contacto-item-label">Dirección</span>
-              <span class="contacto-item-value">Calle Pedro Moreno, Col. Zacuauhtitla,<br>Coacalco, Estado de México</span>
-            </div>
-          </div>
-          <div class="contacto-item">
-            <div class="contacto-icon">💬</div>
-            <div>
-              <span class="contacto-item-label">WhatsApp</span>
-              <span class="contacto-item-value"><a href="https://wa.me/5215511735378" target="_blank">55 1173 5378</a></span>
-            </div>
-          </div>
-          <div class="contacto-item">
-            <div class="contacto-icon">📱</div>
-            <div>
-              <span class="contacto-item-label">Redes sociales</span>
-              <span class="contacto-item-value"><a href="https://www.instagram.com/elfresnocoacalco/" target="_blank">@ElFresnoCoacalco</a> en todas las plataformas</span>
-            </div>
-          </div>
-        </div>
-        <div class="contacto-horario">
-          <span class="horario-title">Horario de visitas</span>
-          <div class="horario-row">
-            <span class="horario-day">Lunes — Viernes</span>
-            <span class="horario-time">10:00 – 17:30 h</span>
-          </div>
-          <div class="horario-row">
-            <span class="horario-day">Fines de semana</span>
-            <span class="horario-time">Con cita previa vía WhatsApp</span>
-          </div>
-        </div>
-      </div>
-      <div class="contacto-map reveal reveal-delay-2">
-        <iframe 
-          class="map-embed"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.0!2d-98.9!3d19.65!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zSmFyZMOtbiBFbCBGcmVzbm8!5e0!3m2!1ses!2smx!4v1680000000000!5m2!1ses!2smx"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Ubicación Jardín El Fresno"
-        ></iframe>
-        <div class="map-cta-wrap">
-          <a href="https://maps.app.goo.gl/m4KDfbmcNTRW4BWBA" target="_blank" class="map-cta">
-            Cómo llegar &rarr;
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">El <span>Fresno</span></div>
-  <p class="footer-tagline">El mejor lugar para sus eventos sociales</p>
-  <div class="footer-redes">
-    <a href="https://www.instagram.com/elfresnocoacalco/" target="_blank" class="footer-red">Instagram</a>
-    <a href="https://www.facebook.com/elfresnocoacalco/" target="_blank" class="footer-red">Facebook</a>
-    <a href="https://www.tiktok.com/@elfresnocoacalco" target="_blank" class="footer-red">TikTok</a>
-    <a href="https://wa.me/5215511735378" target="_blank" class="footer-red">WhatsApp</a>
-  </div>
-  <div class="footer-divider"></div>
-  <p class="footer-copy">Jardín El Fresno &copy; 2025 · Coacalco, Estado de México · @ElFresnoCoacalco</p>
-</footer>
-
-<!-- VOLVER ARRIBA -->
-<button class="btt-btn" id="bttBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver arriba">
-  <span class="btt-arrow"></span>
-</button>
-
-<!-- WHATSAPP BUTTON -->
-<a href="https://wa.me/5215511735378?text=Hola,%20me%20gustaría%20cotizar%20un%20evento%20en%20Jardín%20El%20Fresno" class="wa-btn" target="_blank" title="Chatear por WhatsApp">
-  <svg class="wa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
+  </div></header>
+  <nav id="nav"></nav>
+  <div id="toast-el" class="toast" style="display:none"></div>
+  <main>
+    <!-- Sections injected by JS -->
+    <div id="sec-registro" class="section active"></div>
+    <div id="sec-resumen" class="section"></div>
+    <div id="sec-tarjetas" class="section"></div>
+    <div id="sec-ahorros" class="section"></div>
+    <div id="sec-metas" class="section"></div>
+  </main>
+  <footer>Sincronizado con Firebase · <span id="sync-status2"></span></footer>
+</div>
 
 <script>
-  const navbar = document.getElementById('navbar');
-  const heroBg = document.getElementById('heroBg');
+// ══════════ CONFIG ══════════
+const firebaseConfig = {
+  apiKey: "AIzaSyAdDvYwEtiR1uMsLOPlhsVLK3YbCJlbk0o",
+  authDomain: "mis-finanzas-app-a4f3a.firebaseapp.com",
+  projectId: "mis-finanzas-app-a4f3a",
+  storageBucket: "mis-finanzas-app-a4f3a.firebasestorage.app",
+  messagingSenderId: "960576391416",
+  appId: "1:960576391416:web:a5fc036e43901ebb9b930d"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 80) navbar.classList.add('scrolled');
-    else navbar.classList.remove('scrolled');
-  });
+const TABS=[{id:"registro",label:"Registro",icon:"📝"},{id:"resumen",label:"Resumen",icon:"📊"},{id:"tarjetas",label:"Tarjetas",icon:"💳"},{id:"ahorros",label:"Ahorros",icon:"🏦"},{id:"metas",label:"Metas",icon:"🎯"}];
+const CAT_G=["Alimentación","Transporte","Servicios","Entretenimiento","Salud","Educación","Hogar","Ropa","Mascotas","Seguros","Suscripciones","Otro"];
+const CAT_I=["Salario","Freelance","Venta","Inversiones","Reembolso","Otro"];
+const METODOS=["Efectivo","Débito","Crédito","Transferencia"];
+const MESES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const CL=["#2563eb","#dc2626","#f59e0b","#10b981","#8b5cf6","#ec4899","#06b6d4","#84cc16","#f97316","#6366f1"];
 
-  setTimeout(() => { heroBg.classList.add('loaded'); }, 100);
+let PIN="";
+let DATA={registros:[],recurrentes:[],tarjetas:[],ahorros:[],metas:[]};
+let currentTab="registro";
+let mesSel=new Date().getMonth();
+const ANIO=new Date().getFullYear();
 
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+// ══════════ UTILS ══════════
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const tdy=()=>new Date().toISOString().slice(0,10);
+const pD=s=>new Date(s+"T12:00:00");
+const fmt=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",minimumFractionDigits:0,maximumFractionDigits:0}).format(n||0);
+const fmtD=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"}).format(n||0);
+const pct=n=>Math.round((n||0)*100)+"%";
+
+function toast(msg,ms){
+  const el=document.getElementById("toast-el");el.textContent=msg;el.style.display="block";
+  setTimeout(()=>el.style.display="none",ms||3500);
+}
+function setSync(s){
+  const m={ok:["sync-ok","Sincronizado"],off:["sync-off","Sin conexión"],load:["sync-load","Sincronizando..."]};
+  const[cls,txt]=m[s]||m.load;
+  document.getElementById("sync-status").innerHTML=`<span class="sync-dot ${cls}"></span>${txt}`;
+  document.getElementById("sync-status2").textContent=txt;
+}
+
+// ══════════ FIREBASE ══════════
+async function loadFromFirebase(){
+  try{
+    const doc=await db.collection("finanzas").doc(PIN).get();
+    if(doc.exists){DATA={...DATA,...doc.data()};setSync("ok");return true;}
+    else{await saveToFirebase();setSync("ok");return true;}
+  }catch(e){console.error(e);setSync("off");return false;}
+}
+async function saveToFirebase(){
+  try{await db.collection("finanzas").doc(PIN).set(DATA);setSync("ok");}
+  catch(e){console.error(e);setSync("off");}
+}
+async function saveKey(key){
+  try{await db.collection("finanzas").doc(PIN).update({[key]:DATA[key]});setSync("ok");}
+  catch(e){saveToFirebase();}
+}
+
+// ══════════ LOGIN ══════════
+async function tryLogin(){
+  const pin=document.getElementById("pin-input").value.trim();
+  if(pin.length<4){document.getElementById("login-err").style.display="block";return;}
+  PIN=pin;
+  document.getElementById("login-err").style.display="none";
+  await loadFromFirebase();
+  genRecurrentes();
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="block";
+  initApp();
+}
+
+// ══════════ RECURRENTES ══════════
+function genRecurrentes(){
+  const today=tdy();let count=0;
+  DATA.recurrentes.forEach(rc=>{
+    if(!rc.activa)return;
+    let cur=rc.ultimaGen||rc.fechaInicio;
+    let nx=nextD(cur,rc.freq,rc.customDays);let c=0;
+    while(nx&&nx<=today&&c<60){
+      if(rc.fechaFin&&nx>rc.fechaFin)break;
+      if(!DATA.registros.some(r=>r.recId===rc.id&&r.fecha===nx)){
+        DATA.registros.push({id:uid(),fecha:nx,tipo:rc.tipo,categoria:rc.categoria,desc:rc.desc+" ↻",metodo:rc.metodo,monto:rc.monto,recId:rc.id,tarjetaId:rc.tarjetaId||"",metaId:rc.metaId||"",aplicado:false});
+        count++;
       }
-    });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
+      cur=nx;nx=nextD(cur,rc.freq,rc.customDays);c++;
+    }
+    rc.ultimaGen=cur;
+  });
+  if(count>0){saveToFirebase();setTimeout(()=>toast(`⏳ ${count} pendiente${count>1?"s":""} por confirmar`),500);}
+}
+function addDt(ds,days){const d=pD(ds);d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
+function addMo(ds,mo){const d=pD(ds);d.setMonth(d.getMonth()+mo);return d.toISOString().slice(0,10);}
+function nextD(l,f,c){if(f==="semanal")return addDt(l,7);if(f==="quincenal")return addDt(l,15);if(f==="mensual")return addMo(l,1);if(f==="custom")return addDt(l,c||1);return null;}
 
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// ══════════ CSV ══════════
+function splitCSV(line){const r=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(q){if(c==='"'&&line[i+1]==='"'){cur+='"';i++;}else if(c==='"')q=false;else cur+=c;}else{if(c==='"')q=true;else if(c===','||c==='\t'||c===';'){r.push(cur);cur="";}else cur+=c;}}r.push(cur);return r;}
+function parseCSV(text){const lines=text.split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return[];const hdr=splitCSV(lines[0]).map(h=>h.trim());return lines.slice(1).map(l=>{const v=splitCSV(l);const o={};hdr.forEach((h,i)=>{o[h]=(v[i]||"").trim();});return o;}).filter(r=>Object.values(r).some(v=>v));}
+function normDate(v){if(!v)return"";const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);if(m)return m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");m=s.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);if(m)return m[1]+"-"+m[2].padStart(2,"0")+"-"+m[3].padStart(2,"0");const d=new Date(s);return isNaN(d)?"":(d.toISOString().slice(0,10));}
+function findCol(h,a){const lh=h.map(x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim());for(const al of a){const i=lh.findIndex(x=>x.includes(al));if(i>=0)return i;}return-1;}
+function parseMonto(v){const s=String(v).replace(/[$,\s]/g,"").replace(/\((.+)\)/,"$1");const n=parseFloat(s);return isNaN(n)?0:Math.abs(n);}
+function mapCSVRows(rows){if(!rows.length)return[];const h=Object.keys(rows[0]);const iF=findCol(h,["fecha","date","dia"]),iT=findCol(h,["tipo","type","movimiento"]),iC=findCol(h,["categoria","category","concepto","rubro"]),iD=findCol(h,["descripcion","description","detalle","referencia","memo"]),iM=findCol(h,["metodo","method","pago","payment"]),iA=findCol(h,["monto","amount","importe","cantidad","cargo","valor","total"]);
+return rows.map(row=>{const v=h.map(k=>row[k]);const raw=iA>=0?v[iA]:"";const tipo=iT>=0&&v[iT]?(String(v[iT]).toLowerCase().includes("ingreso")||String(v[iT]).toLowerCase().includes("abono")?"Ingreso":"Gasto"):(parseFloat(String(raw).replace(/[$,]/g,""))>0?"Ingreso":"Gasto");
+return{id:uid(),fecha:normDate(iF>=0?v[iF]:""),tipo,categoria:(iC>=0?String(v[iC]):"Otro").trim()||"Otro",desc:(iD>=0?String(v[iD]):"").trim(),metodo:(iM>=0?String(v[iM]):"Otro").trim()||"Otro",monto:parseMonto(raw)};}).filter(r=>r.fecha&&r.monto>0);}
+function exportCSV(){
+  const hd="Fecha,Tipo,Categoría,Descripción,Método,Monto";
+  const rows=DATA.registros.map(r=>[r.fecha,r.tipo,r.categoria,r.desc,r.metodo,r.monto].map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(","));
+  const blob=new Blob(["\uFEFF"+hd+"\n"+rows.join("\n")],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="finanzas_"+tdy()+".csv";a.click();
+}
+function downloadTPL(){
+  const csv="\uFEFF"+"Fecha,Tipo,Categoría,Descripción,Método,Monto\n2026-04-01,Ingreso,Salario,Nómina,Transferencia,15000\n2026-04-03,Gasto,Alimentación,Despensa,Débito,1800";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="plantilla_finanzas.csv";a.click();
+}
+
+// ══════════ SYNC HELPERS ══════════
+function applyRegEffect(reg){
+  // Update tarjeta
+  if(reg.tarjetaId){
+    const t=DATA.tarjetas.find(x=>x.id===reg.tarjetaId);
+    if(t){
+      if(reg.tipo==="Gasto"){
+        if(t.tipo==="Crédito") t.saldo+=reg.monto; // debt increases
+        else t.saldo-=reg.monto; // debit balance decreases
+      } else { // Ingreso
+        if(t.tipo==="Crédito") t.saldo=Math.max(0,t.saldo-reg.monto); // paying credit
+        else t.saldo+=reg.monto; // deposit
       }
-    });
-  });
+      saveKey("tarjetas");
+    }
+  }
+  // Update meta
+  if(reg.metaId){
+    const m=DATA.metas.find(x=>x.id===reg.metaId);
+    if(m){m.actual+=reg.monto;saveKey("metas");}
+  }
+}
+function reverseRegEffect(reg){
+  if(reg.tarjetaId){
+    const t=DATA.tarjetas.find(x=>x.id===reg.tarjetaId);
+    if(t){
+      if(reg.tipo==="Gasto"){
+        if(t.tipo==="Crédito") t.saldo=Math.max(0,t.saldo-reg.monto);
+        else t.saldo+=reg.monto;
+      } else {
+        if(t.tipo==="Crédito") t.saldo+=reg.monto;
+        else t.saldo=Math.max(0,t.saldo-reg.monto);
+      }
+      saveKey("tarjetas");
+    }
+  }
+  if(reg.metaId){
+    const m=DATA.metas.find(x=>x.id===reg.metaId);
+    if(m){m.actual=Math.max(0,m.actual-reg.monto);saveKey("metas");}
+  }
+}
+function tarjetaOptions(selId){
+  let h='<option value="">— Sin tarjeta —</option>';
+  const creditos=DATA.tarjetas.filter(t=>t.tipo==="Crédito");
+  const debitos=DATA.tarjetas.filter(t=>t.tipo==="Débito");
+  if(creditos.length){h+='<optgroup label="💳 Crédito">';creditos.forEach(t=>{h+=`<option value="${t.id}" ${t.id===selId?"selected":""}>${t.banco}</option>`;});h+='</optgroup>';}
+  if(debitos.length){h+='<optgroup label="🏦 Débito">';debitos.forEach(t=>{h+=`<option value="${t.id}" ${t.id===selId?"selected":""}>${t.banco}</option>`;});h+='</optgroup>';}
+  return h;
+}
+function metaOptions(selId){
+  let h='<option value="">— Sin meta —</option>';
+  DATA.metas.forEach(m=>{const av=m.objetivo>0?Math.round(m.actual/m.objetivo*100):0;h+=`<option value="${m.id}" ${m.id===selId?"selected":""}>🎯 ${m.nombre} (${av}%)</option>`;});
+  return h;
+}
+function tarjetaNombre(id){const t=DATA.tarjetas.find(x=>x.id===id);return t?(t.tipo==="Crédito"?"💳":"🏦")+" "+t.banco:"";}
+function metaNombre(id){const m=DATA.metas.find(x=>x.id===id);return m?"🎯 "+m.nombre:"";}
 
-  // Back to top
-  const bttBtn = document.getElementById('bttBtn');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) bttBtn.classList.add('visible');
-    else bttBtn.classList.remove('visible');
-  });
+// ══════════ INIT ══════════
+function initApp(){
+  document.getElementById("hdr-date").textContent=new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  // Nav
+  const nav=document.getElementById("nav");
+  nav.innerHTML=TABS.map(t=>`<button class="nav-btn ${t.id===currentTab?'active':''}" data-tab="${t.id}"><span style="font-size:16px">${t.icon}</span>${t.label}</button>`).join("");
+  nav.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>{currentTab=b.dataset.tab;nav.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById("sec-"+currentTab).classList.add("active");renderSection();}));
+  renderSection();
+}
+function renderSection(){
+  if(currentTab==="registro")renderRegistro();
+  else if(currentTab==="resumen")renderResumen();
+  else if(currentTab==="tarjetas")renderTarjetas();
+  else if(currentTab==="ahorros")renderAhorros();
+  else if(currentTab==="metas")renderMetas();
+}
 
+// ══════════ REGISTRO ══════════
+let regFilter="todos",regShowForm=false,regEditId=null,regShowPending="all";
+function isAplicado(r){return r.aplicado!==false;}
+function getUpcoming(){
+  // Generate preview rows for next upcoming occurrence of each active rule
+  const today=tdy();const previews=[];
+  DATA.recurrentes.filter(r=>r.activa).forEach(rc=>{
+    const cur=rc.ultimaGen||rc.fechaInicio;
+    const nx=nextD(cur,rc.freq,rc.customDays);
+    if(nx&&(!rc.fechaFin||nx<=rc.fechaFin)&&!DATA.registros.some(r=>r.recId===rc.id&&r.fecha===nx)){
+      previews.push({id:"prev-"+rc.id,fecha:nx,tipo:rc.tipo,categoria:rc.categoria,desc:rc.desc+" ↻ (próximo)",metodo:rc.metodo,monto:rc.monto,recId:rc.id,tarjetaId:rc.tarjetaId||"",metaId:rc.metaId||"",aplicado:false,isPreview:true});
+    }
+  });
+  return previews;
+}
+function renderRegistro(){
+  const el=document.getElementById("sec-registro");
+  const upcoming=getUpcoming();
+  const allEntries=[...DATA.registros,...upcoming];
+  const sorted=allEntries.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const filtered=regFilter==="todos"?sorted:sorted.filter(r=>pD(r.fecha).getMonth()===parseInt(regFilter));
+  const byStatus=regShowPending==="pending"?filtered.filter(r=>!isAplicado(r)):regShowPending==="applied"?filtered.filter(r=>isAplicado(r)):filtered;
+  let sal=0;const allForSaldo=[...filtered].reverse();
+  const saldoMap={};allForSaldo.forEach(r=>{if(isAplicado(r)&&!r.isPreview)sal+=r.tipo==="Ingreso"?r.monto:-r.monto;saldoMap[r.id]=sal;});
+  const ws=byStatus.map(r=>({...r,sal:saldoMap[r.id]||0}));
+  const pendCount=DATA.registros.filter(r=>!isAplicado(r)).length;
+  const upCount=upcoming.length;
+
+  let h=`<div class="sec-hdr"><h2 class="sec-title">Registro Diario</h2><div style="display:flex;gap:6px;flex-wrap:wrap">
+    <button class="btn btn-s" onclick="toggleImport()">📥 Importar</button>
+    <button class="btn btn-s" onclick="exportCSV()">📤 Exportar</button>
+    <button class="btn btn-s" onclick="openReglasModal()">⚙ Reglas<span class="cnt-badge">${DATA.recurrentes.filter(r=>r.activa).length}</span></button>
+    <button class="btn btn-p" onclick="toggleRegForm()">+ Nuevo</button>
+  </div></div>`;
+
+  h+=`<div id="import-panel" style="display:none"></div>`;
+  h+=`<div id="reg-form" style="display:none"></div>`;
+
+  h+=`<div style="display:flex;align-items:center;gap:8px;margin:12px 0;flex-wrap:wrap">
+    <span style="font-size:13px;color:var(--muted)">Filtrar:</span>
+    <select class="inp" style="width:auto;min-width:90px" onchange="regFilter=this.value;renderRegistro()">
+      <option value="todos" ${regFilter==="todos"?"selected":""}>Todos</option>
+      ${MESES.map((m,i)=>`<option value="${i}" ${regFilter==String(i)?"selected":""}>${m}</option>`).join("")}
+    </select>
+    <select class="inp" style="width:auto;min-width:120px" onchange="regShowPending=this.value;renderRegistro()">
+      <option value="all" ${regShowPending==="all"?"selected":""}>Todos</option>
+      <option value="applied" ${regShowPending==="applied"?"selected":""}>✅ Aplicados</option>
+      <option value="pending" ${regShowPending==="pending"?"selected":""}>⏳ Pendientes${pendCount?" ("+pendCount+")":""}</option>
+    </select>
+    ${pendCount>0?`<button class="btn btn-green" style="font-size:11px;padding:5px 12px" onclick="applyAll()">✅ Aplicar todos (${pendCount})</button>`:""}
+    <span style="font-size:12px;color:var(--light);margin-left:auto">${ws.length} registros</span>
+  </div>`;
+
+  h+=`<div class="tw"><table><thead><tr>${["✓","Fecha","Tipo","Categoría","Descripción","Método","Monto","Saldo",""].map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>`;
+  if(ws.length===0)h+=`<tr><td colspan="9" style="padding:32px;text-align:center;color:var(--light)">Sin registros.</td></tr>`;
+  ws.forEach(r=>{
+    const ap=isAplicado(r);
+    const isPrev=r.isPreview;
+    const tn=r.tarjetaId?tarjetaNombre(r.tarjetaId):"";
+    const mn=r.metaId?metaNombre(r.metaId):"";
+    const tags=(tn||mn)?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:2px">${tn?`<span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:3px">${tn}</span>`:""}${mn?`<span style="font-size:9px;background:#fce7f3;color:#be185d;padding:1px 5px;border-radius:3px">${mn}</span>`:""}</div>`:"";
+    const rowBg=isPrev?"background:#f0f9ff;border-left:3px solid #93c5fd":(!ap?"background:#fefce8":"");
+    h+=`<tr style="opacity:${ap&&!isPrev?1:0.55};${rowBg}">
+      <td>${isPrev?'<span style="font-size:11px;color:#3b82f6" title="Programado próximo">🕐</span>':`<input type="checkbox" ${ap?"checked":""} onchange="toggleAplicado('${r.id}')" style="width:18px;height:18px;cursor:pointer;accent-color:#16a34a">`}</td>
+      <td>${pD(r.fecha).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}</td>
+      <td><span class="badge ${r.tipo==="Ingreso"?"b-green":"b-red"}">${r.tipo==="Ingreso"?"▲":"▼"} ${r.tipo}</span></td>
+      <td>${r.categoria}</td>
+      <td style="text-align:left;max-width:200px;overflow:hidden">${r.desc}${r.recId&&!isPrev?'<span style="font-size:10px;color:var(--purple)"> 🔄</span>':''}${tags}</td>
+      <td><span class="mtag">${r.metodo}</span></td>
+      <td style="font-weight:600;color:${r.tipo==="Ingreso"?"var(--green)":"var(--red)"}">${fmt(r.monto)}</td>
+      <td style="font-weight:700;color:${r.sal>=0?"var(--text)":"var(--red)"}">${ap&&!isPrev?fmt(r.sal):'<span style="color:var(--light)">—</span>'}</td>
+      <td>${!isPrev?`<button class="ib" onclick="editReg('${r.id}')">✏️</button><button class="ib" onclick="delReg('${r.id}')">🗑</button>`:''}</td>
+    </tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // Reglas modal overlay
+  h+=`<div id="reglas-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:var(--card);border-radius:12px;padding:24px;max-width:700px;width:95%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)" onclick="event.stopPropagation()">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="margin:0;font-size:16px;font-weight:700">⚙ Reglas de Recurrencia</h3>
+        <button class="btn btn-g" onclick="document.getElementById('reglas-modal').style.display='none'">✕ Cerrar</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Define reglas para generar movimientos automáticamente. Los generados aparecen en la tabla como pendientes (sin palomear).</p>
+      <div id="rec-form-wrap"></div>
+      <div style="margin-bottom:8px"><button class="btn btn-p" onclick="showRecForm()">+ Nueva regla</button></div>
+      <div id="rec-rules-list"></div>
+    </div>
+  </div>`;
+
+  el.innerHTML=h;
+  if(document.getElementById("rec-rules-list"))renderRecRules();
+}
+
+function toggleAplicado(id){
+  const r=DATA.registros.find(x=>x.id===id);
+  if(!r)return;
+  if(isAplicado(r)){
+    // Uncheck: reverse effects
+    reverseRegEffect(r);
+    r.aplicado=false;
+  } else {
+    // Check: apply effects
+    r.aplicado=true;
+    applyRegEffect(r);
+  }
+  saveKey("registros");renderRegistro();
+}
+function applyAll(){
+  DATA.registros.filter(r=>!isAplicado(r)).forEach(r=>{r.aplicado=true;applyRegEffect(r);});
+  saveKey("registros");toast("✅ Todos los pendientes aplicados");renderRegistro();
+}
+
+function toggleRegForm(editData){
+  const el=document.getElementById("reg-form");
+  if(el.style.display==="block"&&!editData){el.style.display="none";return;}
+  const r=editData||{fecha:tdy(),tipo:"Gasto",categoria:"",desc:"",metodo:"Efectivo",monto:"",tarjetaId:"",metaId:""};
+  regEditId=editData?r.id:null;
+  const cats=r.tipo==="Ingreso"?CAT_I:CAT_G;
+  el.innerHTML=`<div class="card" style="animation:fi .2s ease"><div class="fg">
+    <div class="fw"><span class="lbl">Fecha</span><input type="date" class="inp" id="rf-fecha" value="${r.fecha}"></div>
+    <div class="fw"><span class="lbl">Tipo</span><select class="inp" id="rf-tipo" onchange="document.getElementById('rf-cat').innerHTML=((this.value==='Ingreso'?${JSON.stringify(CAT_I)}:${JSON.stringify(CAT_G)}).map(c=>'<option>'+c+'</option>')).join('')"><option ${r.tipo==="Ingreso"?"selected":""}>Ingreso</option><option ${r.tipo==="Gasto"?"selected":""}>Gasto</option></select></div>
+    <div class="fw"><span class="lbl">Categoría</span><select class="inp" id="rf-cat">${cats.map(c=>`<option ${c===r.categoria?"selected":""}>${c}</option>`).join("")}</select></div>
+    <div class="fw"><span class="lbl">💳 Tarjeta (opc.)</span><select class="inp" id="rf-tarjeta">${tarjetaOptions(r.tarjetaId||"")}</select></div>
+    <div class="fw full"><span class="lbl">Descripción</span><input class="inp" id="rf-desc" value="${r.desc}" placeholder="Ej: Despensa semanal"></div>
+    <div class="fw"><span class="lbl">Monto $</span><input type="number" class="inp" id="rf-monto" value="${r.monto||""}" placeholder="0.00" min="0" step="0.01"></div>
+    <div class="fw"><span class="lbl">🎯 Meta (opc.)</span><select class="inp" id="rf-meta">${metaOptions(r.metaId||"")}</select></div>
+    <div class="fw"><span class="lbl">🔄 Repetir</span><select class="inp" id="rf-freq" onchange="document.getElementById('rf-days-wrap').style.display=this.value==='custom'?'flex':'none'"><option value="unico" selected>Solo esta vez</option><option value="semanal">Semanal</option><option value="quincenal">Quincenal</option><option value="mensual">Mensual</option><option value="custom">Personalizado</option></select></div>
+    <div class="fw" id="rf-days-wrap" style="display:none"><span class="lbl">Cada X días</span><input type="number" class="inp" id="rf-days" value="30" min="1"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveReg()">${regEditId?"Actualizar":"Guardar"}</button><button class="btn btn-g" onclick="document.getElementById('reg-form').style.display='none'">Cancelar</button></div></div>`;
+  el.style.display="block";
+}
+function saveReg(){
+  const tarjId=document.getElementById("rf-tarjeta").value;
+  const tarj=DATA.tarjetas.find(t=>t.id===tarjId);
+  const metodo=tarj?(tarj.tipo==="Crédito"?"Crédito":"Débito"):"Efectivo";
+  const freq=document.getElementById("rf-freq")?document.getElementById("rf-freq").value:"unico";
+  const customDays=document.getElementById("rf-days")?parseInt(document.getElementById("rf-days").value)||30:30;
+  const e={fecha:document.getElementById("rf-fecha").value,tipo:document.getElementById("rf-tipo").value,categoria:document.getElementById("rf-cat").value,desc:document.getElementById("rf-desc").value,metodo,monto:parseFloat(document.getElementById("rf-monto").value)||0,tarjetaId:tarjId,metaId:document.getElementById("rf-meta").value,aplicado:true};
+  if(!e.monto||!e.categoria)return;
+  if(regEditId){
+    const i=DATA.registros.findIndex(r=>r.id===regEditId);
+    if(i>=0){
+      const old=DATA.registros[i];
+      if(isAplicado(old))reverseRegEffect(old);
+      DATA.registros[i]={...old,...e};
+      if(isAplicado(DATA.registros[i]))applyRegEffect(DATA.registros[i]);
+    }
+  } else {
+    const newReg={...e,id:uid()};
+    DATA.registros.push(newReg);
+    applyRegEffect(newReg);
+    // Create recurring rule if frequency selected
+    if(freq!=="unico"){
+      const rule={id:uid(),tipo:e.tipo,categoria:e.categoria,desc:e.desc,metodo,monto:e.monto,tarjetaId:tarjId,metaId:e.metaId,freq,customDays,fechaInicio:e.fecha,fechaFin:"",ultimaGen:e.fecha,activa:true};
+      DATA.recurrentes.push(rule);
+      saveKey("recurrentes");
+      const fl=freq==="semanal"?"semanal":freq==="quincenal"?"quincenal":freq==="mensual"?"mensual":"cada "+customDays+" días";
+      toast("✅ Guardado + regla "+fl+" creada");
+    }
+  }
+  saveKey("registros");document.getElementById("reg-form").style.display="none";renderRegistro();
+}
+function editReg(id){const r=DATA.registros.find(x=>x.id===id);if(r)toggleRegForm({...r,monto:String(r.monto)});}
+function delReg(id){
+  const r=DATA.registros.find(x=>x.id===id);
+  if(r&&isAplicado(r))reverseRegEffect(r);
+  DATA.registros=DATA.registros.filter(r=>r.id!==id);
+  saveKey("registros");renderRegistro();
+}
+
+// ── Import ──
+function toggleImport(){
+  const el=document.getElementById("import-panel");
+  if(el.style.display==="block"){el.style.display="none";return;}
+  el.innerHTML=`<div class="card" style="border-left:4px solid var(--purple);animation:fi .2s ease">
+    <h3 style="margin:0 0 8px;font-size:14px;font-weight:700;color:#334155">📥 Importar Movimientos</h3>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 12px">Sube un <strong>.csv</strong> o <strong>.tsv</strong>. Se detectan columnas automáticamente.</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <label class="btn btn-purple" style="cursor:pointer">Seleccionar archivo<input type="file" accept=".csv,.tsv" onchange="handleImportFile(this)" style="display:none"></label>
+      <button class="btn btn-g" style="font-size:12px" onclick="downloadTPL()">⬇ Plantilla CSV</button>
+    </div>
+    <div id="import-preview"></div>
+  </div>`;
+  el.style.display="block";
+}
+function handleImportFile(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const rows=parseCSV(e.target.result);const mapped=mapCSVRows(rows);
+    if(!mapped.length){toast("No se encontraron registros válidos");return;}
+    let h=`<div style="margin-top:14px;background:#f8fafc;border-radius:8px;padding:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div><strong>📄 ${file.name}</strong> <span style="font-size:12px;color:var(--muted);margin-left:12px">${mapped.length} de ${rows.length} válidas</span></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-green" onclick="confirmImport()">✓ Importar ${mapped.length}</button><button class="btn btn-g" onclick="document.getElementById('import-preview').innerHTML=''">Cancelar</button></div>
+      </div>
+      <div class="tw" style="max-height:200px;overflow-y:auto"><table><thead><tr>${["Fecha","Tipo","Categoría","Desc","Método","Monto"].map(x=>`<th style="position:sticky;top:0;z-index:1">${x}</th>`).join("")}</tr></thead><tbody>`;
+    mapped.slice(0,15).forEach(r=>{h+=`<tr><td>${r.fecha}</td><td><span class="badge ${r.tipo==="Ingreso"?"b-green":"b-red"}">${r.tipo}</span></td><td>${r.categoria}</td><td style="text-align:left;max-width:140px;overflow:hidden;text-overflow:ellipsis">${r.desc}</td><td>${r.metodo}</td><td style="font-weight:600">${fmt(r.monto)}</td></tr>`;});
+    h+=`</tbody></table></div></div>`;
+    document.getElementById("import-preview").innerHTML=h;
+    window._importData=mapped;
+  };
+  reader.readAsText(file,"UTF-8");inp.value="";
+}
+function confirmImport(){
+  if(!window._importData)return;
+  DATA.registros.push(...window._importData);
+  saveKey("registros");toast("✓ "+window._importData.length+" registros importados");
+  window._importData=null;document.getElementById("import-panel").style.display="none";renderRegistro();
+}
+
+// ── Recurrentes (Modal) ──
+function openReglasModal(){
+  renderRegistro(); // ensure modal HTML exists
+  const modal=document.getElementById("reglas-modal");
+  modal.style.display="flex";
+  renderRecRules();
+}
+function renderRecRules(){
+  const el=document.getElementById("rec-rules-list");
+  if(!el)return;
+  let h="";
+  if(!DATA.recurrentes.length)h+=`<p style="color:var(--light);font-size:13px">Sin reglas. Crea una para automatizar movimientos.</p>`;
+  DATA.recurrentes.forEach(r=>{
+    const fl=r.freq==="semanal"?"Cada 7d":r.freq==="quincenal"?"Cada 15d":r.freq==="mensual"?"Mensual":"Cada "+r.customDays+"d";
+    h+=`<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;background:${r.activa?"#fafbfc":"#f1f5f9"};opacity:${r.activa?1:0.5}">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="badge ${r.tipo==="Ingreso"?"b-green":"b-red"}">${r.tipo==="Ingreso"?"▲":"▼"} ${r.tipo}</span>
+          <strong>${r.desc||r.categoria}</strong>
+          <strong style="color:${r.tipo==="Ingreso"?"var(--green)":"var(--red)"}">${fmt(r.monto)}</strong>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:12px;flex-wrap:wrap">
+          <span>🔄 ${fl}</span><span>📅 ${pD(r.fechaInicio).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}</span>
+          ${r.fechaFin?`<span>⏹ ${pD(r.fechaFin).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}</span>`:""}
+          ${r.tarjetaId?`<span>${tarjetaNombre(r.tarjetaId)}</span>`:""}
+          ${r.metaId?`<span>${metaNombre(r.metaId)}</span>`:""}
+        </div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="ib" style="font-size:18px" onclick="toggleRecActive('${r.id}')">${r.activa?"⏸":"▶️"}</button>
+        <button class="ib" onclick="delRec('${r.id}')">🗑</button>
+      </div>
+    </div>`;
+  });
+  el.innerHTML=h;
+}
+function showRecForm(){
+  const w=document.getElementById("rec-form-wrap");
+  w.innerHTML=`<div style="background:#f8fafc;border-radius:8px;padding:14px;border:1px solid var(--border);margin-bottom:14px"><div class="fg">
+    <div class="fw"><span class="lbl">Tipo</span><select class="inp" id="rcf-tipo"><option>Ingreso</option><option selected>Gasto</option></select></div>
+    <div class="fw"><span class="lbl">Categoría</span><select class="inp" id="rcf-cat">${CAT_G.map(c=>`<option>${c}</option>`).join("")}</select></div>
+    <div class="fw"><span class="lbl">Método</span><select class="inp" id="rcf-met">${METODOS.map(m=>`<option>${m}</option>`).join("")}</select></div>
+    <div class="fw"><span class="lbl">Monto $</span><input type="number" class="inp" id="rcf-monto" min="0"></div>
+    <div class="fw full"><span class="lbl">Descripción</span><input class="inp" id="rcf-desc" placeholder="Ej: Netflix, Renta..."></div>
+    <div class="fw"><span class="lbl">💳 Tarjeta (opc.)</span><select class="inp" id="rcf-tarjeta">${tarjetaOptions("")}</select></div>
+    <div class="fw"><span class="lbl">🎯 Meta (opc.)</span><select class="inp" id="rcf-meta">${metaOptions("")}</select></div>
+    <div class="fw"><span class="lbl">Frecuencia</span><select class="inp" id="rcf-freq"><option value="semanal">Semanal</option><option value="quincenal">Quincenal</option><option value="mensual" selected>Mensual</option><option value="custom">Personalizado</option></select></div>
+    <div class="fw"><span class="lbl">Cada X días</span><input type="number" class="inp" id="rcf-days" value="30" min="1"></div>
+    <div class="fw"><span class="lbl">Fecha inicio</span><input type="date" class="inp" id="rcf-ini" value="${tdy()}"></div>
+    <div class="fw"><span class="lbl">Fecha fin (opc.)</span><input type="date" class="inp" id="rcf-fin"></div>
+  </div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveRec()">Guardar</button><button class="btn btn-g" onclick="document.getElementById('rec-form-wrap').innerHTML=''">Cancelar</button></div></div>`;
+}
+function saveRec(){
+  const e={id:uid(),tipo:document.getElementById("rcf-tipo").value,categoria:document.getElementById("rcf-cat").value,metodo:document.getElementById("rcf-met").value,monto:parseFloat(document.getElementById("rcf-monto").value)||0,desc:document.getElementById("rcf-desc").value,tarjetaId:document.getElementById("rcf-tarjeta").value,metaId:document.getElementById("rcf-meta").value,freq:document.getElementById("rcf-freq").value,customDays:parseInt(document.getElementById("rcf-days").value)||30,fechaInicio:document.getElementById("rcf-ini").value,fechaFin:document.getElementById("rcf-fin").value,ultimaGen:document.getElementById("rcf-ini").value,activa:true};
+  if(!e.monto||!e.categoria)return;
+  DATA.recurrentes.push(e);
+  // Generate first entry on start date if it's today or past
+  if(e.fechaInicio<=tdy()){
+    DATA.registros.push({id:uid(),fecha:e.fechaInicio,tipo:e.tipo,categoria:e.categoria,desc:e.desc+" ↻",metodo:e.metodo,monto:e.monto,recId:e.id,tarjetaId:e.tarjetaId,metaId:e.metaId,aplicado:false});
+    saveKey("registros");
+  }
+  saveKey("recurrentes");
+  document.getElementById("rec-form-wrap").innerHTML="";
+  renderRecRules();renderRegistro();
+  toast("Regla creada — aparece en la tabla como pendiente");
+}
+function toggleRecActive(id){const r=DATA.recurrentes.find(x=>x.id===id);if(r){r.activa=!r.activa;saveKey("recurrentes");renderRecRules();renderRegistro();}}
+function delRec(id){DATA.recurrentes=DATA.recurrentes.filter(r=>r.id!==id);saveKey("recurrentes");renderRecRules();renderRegistro();}
+
+// ══════════ RESUMEN ══════════
+function renderResumen(){
+  const el=document.getElementById("sec-resumen");
+  const rm=DATA.registros.filter(r=>{const d=pD(r.fecha);return d.getMonth()===mesSel&&d.getFullYear()===ANIO&&isAplicado(r);});
+  const ing=rm.filter(r=>r.tipo==="Ingreso").reduce((s,r)=>s+r.monto,0);
+  const gas=rm.filter(r=>r.tipo==="Gasto").reduce((s,r)=>s+r.monto,0);
+  const bal=ing-gas,pa=ing>0?bal/ing:0;
+  const pc={};rm.filter(r=>r.tipo==="Gasto").forEach(r=>{pc[r.categoria]=(pc[r.categoria]||0)+r.monto;});
+  const ca=Object.entries(pc).sort((a,b)=>b[1]-a[1]);const mx=ca.length?ca[0][1]:1;
+  const mn=MESES.map((_,i)=>{const r=DATA.registros.filter(x=>{const d=pD(x.fecha);return d.getMonth()===i&&d.getFullYear()===ANIO&&isAplicado(x);});return{m:MESES[i],i:r.filter(x=>x.tipo==="Ingreso").reduce((s,x)=>s+x.monto,0),g:r.filter(x=>x.tipo==="Gasto").reduce((s,x)=>s+x.monto,0)};});
+  const mm=Math.max(...mn.map(x=>Math.max(x.i,x.g)),1);
+
+  let h=`<div class="sec-hdr"><h2 class="sec-title">Resumen Mensual</h2>
+    <select class="inp" style="width:auto" onchange="mesSel=parseInt(this.value);renderResumen()">
+    ${MESES.map((m,i)=>`<option value="${i}" ${i===mesSel?"selected":""}>${m} ${ANIO}</option>`).join("")}</select></div>`;
+  h+=`<div class="kpi-row">
+    <div class="kpi" style="border-left:4px solid var(--green)"><span class="kpi-label">Ingresos</span><span class="kpi-val" style="color:var(--green)">${fmt(ing)}</span></div>
+    <div class="kpi" style="border-left:4px solid var(--red)"><span class="kpi-label">Gastos</span><span class="kpi-val" style="color:var(--red)">${fmt(gas)}</span></div>
+    <div class="kpi" style="border-left:4px solid ${bal>=0?"var(--blue)":"var(--red)"}"><span class="kpi-label">Balance</span><span class="kpi-val" style="color:${bal>=0?"var(--blue)":"var(--red)"}">${fmt(bal)}</span></div>
+    <div class="kpi" style="border-left:4px solid var(--purple)"><span class="kpi-label">% Ahorro</span><span class="kpi-val" style="color:var(--purple)">${pct(pa)}</span></div>
+  </div>`;
+  h+=`<div class="grid2" style="margin-top:16px"><div class="card"><h3 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#334155">Gastos por Categoría</h3>`;
+  if(!ca.length)h+=`<p style="color:var(--light);font-size:13px">Sin gastos</p>`;
+  ca.forEach(([c,v],i)=>{h+=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${c}</span><span style="font-weight:600">${fmt(v)} <span style="color:var(--light);font-weight:400">(${gas>0?pct(v/gas):"0%"})</span></span></div><div class="bar-bg"><div class="bar-fill" style="width:${(v/mx)*100}%;background:${CL[i%CL.length]}"></div></div></div>`;});
+  h+=`</div><div class="card"><h3 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#334155">Tendencia ${ANIO}</h3>
+    <div style="display:flex;align-items:flex-end;gap:3px;height:160px;margin-top:8px">`;
+  mn.forEach((x,i)=>{h+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;opacity:${i===mesSel?1:0.5}" onclick="mesSel=${i};renderResumen()">
+    <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:1px;height:140px;justify-content:flex-end">
+    ${x.i>0?`<div style="width:70%;background:#bbf7d0;border-radius:2px;height:${(x.i/mm)*120}px;min-height:2px" title="Ing: ${fmt(x.i)}"></div>`:""}
+    ${x.g>0?`<div style="width:70%;background:#fecaca;border-radius:2px;height:${(x.g/mm)*120}px;min-height:2px" title="Gas: ${fmt(x.g)}"></div>`:""}
+    </div><span style="font-size:10px;color:${i===mesSel?"var(--text)":"var(--light)"};font-weight:${i===mesSel?700:400}">${x.m}</span></div>`;});
+  h+=`</div><div style="display:flex;gap:16px;justify-content:center;margin-top:8px"><span style="font-size:11px;color:var(--muted)">🟩 Ingresos</span><span style="font-size:11px;color:var(--muted)">🟥 Gastos</span></div></div></div>`;
+  el.innerHTML=h;
+}
+
+// ══════════ TARJETAS ══════════
+function renderTarjetas(){
+  const el=document.getElementById("sec-tarjetas");
+  const tD=DATA.tarjetas.filter(t=>t.tipo==="Crédito").reduce((s,t)=>s+t.saldo,0);
+  const tL=DATA.tarjetas.filter(t=>t.tipo==="Crédito").reduce((s,t)=>s+t.limite,0);
+  const est=p=>{if(!p)return{t:"N/A",c:"var(--light)",b:"#f1f5f9"};const d=Math.ceil((pD(p)-new Date())/864e5);if(d<0)return{t:"⚠ VENCIDA",c:"var(--red)",b:"#fef2f2"};if(d<=7)return{t:"⚡ "+d+"d",c:"var(--yellow)",b:"#fffbeb"};return{t:"✓ "+d+"d",c:"var(--green)",b:"#f0fdf4"};};
+
+  let h=`<div class="sec-hdr"><h2 class="sec-title">Control de Tarjetas</h2><button class="btn btn-p" onclick="showTarjForm()">+ Nueva</button></div>`;
+  h+=`<div class="kpi-row" style="margin-bottom:16px">
+    <div class="kpi" style="border-left:4px solid var(--red)"><span class="kpi-label">Deuda</span><span class="kpi-val" style="color:var(--red)">${fmt(tD)}</span></div>
+    <div class="kpi" style="border-left:4px solid var(--blue)"><span class="kpi-label">Disponible</span><span class="kpi-val" style="color:var(--blue)">${fmt(tL-tD)}</span></div>
+    <div class="kpi" style="border-left:4px solid ${tL>0&&tD/tL>.3?"var(--yellow)":"var(--green)"}"><span class="kpi-label">Utilización</span><span class="kpi-val">${tL>0?pct(tD/tL):"0%"}</span></div>
+  </div>`;
+  h+=`<div id="tarj-form"></div><div class="cards-grid">`;
+  DATA.tarjetas.forEach(t=>{const e=est(t.pago);const u=t.limite>0?t.saldo/t.limite:0;
+    h+=`<div class="card" style="border-top:3px solid ${t.tipo==="Crédito"?"var(--blue)":"var(--green)"}">
+      <div style="display:flex;justify-content:space-between"><div><h4 style="margin:0;font-size:15px">${t.banco}</h4><span style="font-size:11px;color:var(--muted)">${t.tipo}</span></div>
+      <div style="display:flex;gap:4px"><button class="ib" onclick="editTarj('${t.id}')">✏️</button><button class="ib" onclick="delTarj('${t.id}')">🗑</button></div></div>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><span style="font-size:11px;color:var(--light)">Saldo</span><br><strong style="font-size:16px">${fmt(t.saldo)}</strong></div>
+        ${t.tipo==="Crédito"?`<div><span style="font-size:11px;color:var(--light)">Límite</span><br><span style="font-size:14px;font-weight:600">${fmt(t.limite)}</span></div>`:""}
+        ${t.pago?`<div><span style="font-size:11px;color:var(--light)">Pago</span><br><span style="font-size:13px">${pD(t.pago).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}</span></div>`:""}
+        <div><span style="font-size:11px;color:var(--light)">Estado</span><br><span style="font-size:12px;font-weight:700;color:${e.c};background:${e.b};padding:2px 8px;border-radius:8px">${e.t}</span></div>
+      </div>
+      ${t.tipo==="Crédito"?`<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>Utilización</span><span style="font-weight:600;color:${u>.7?"var(--red)":u>.3?"var(--yellow)":"var(--green)"}">${pct(u)}</span></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(u*100,100)}%;background:${u>.7?"var(--red)":u>.3?"var(--yellow)":"var(--green)"}"></div></div></div>`:""}
+    </div>`;
+  });
+  h+=`</div>`;el.innerHTML=h;
+}
+function showTarjForm(ed){
+  const t=ed||{banco:"",tipo:"Crédito",limite:"",saldo:"",corte:"",pago:"",minimo:""};
+  const eid=ed?t.id:null;
+  document.getElementById("tarj-form").innerHTML=`<div class="card" style="animation:fi .2s ease"><div class="fg">
+    <div class="fw"><span class="lbl">Banco</span><input class="inp" id="tf-banco" value="${t.banco}"></div>
+    <div class="fw"><span class="lbl">Tipo</span><select class="inp" id="tf-tipo"><option ${t.tipo==="Crédito"?"selected":""}>Crédito</option><option ${t.tipo==="Débito"?"selected":""}>Débito</option></select></div>
+    <div class="fw"><span class="lbl">Límite</span><input type="number" class="inp" id="tf-lim" value="${t.limite}"></div>
+    <div class="fw"><span class="lbl">Saldo</span><input type="number" class="inp" id="tf-sal" value="${t.saldo}"></div>
+    <div class="fw"><span class="lbl">Fecha corte</span><input type="date" class="inp" id="tf-cor" value="${t.corte}"></div>
+    <div class="fw"><span class="lbl">Fecha pago</span><input type="date" class="inp" id="tf-pag" value="${t.pago}"></div>
+    <div class="fw"><span class="lbl">Pago mínimo</span><input type="number" class="inp" id="tf-min" value="${t.minimo}"></div>
+  </div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveTarj('${eid||""}')">${eid?"Actualizar":"Guardar"}</button><button class="btn btn-g" onclick="document.getElementById('tarj-form').innerHTML=''">Cancelar</button></div></div>`;
+}
+function saveTarj(eid){
+  const e={banco:document.getElementById("tf-banco").value,tipo:document.getElementById("tf-tipo").value,limite:parseFloat(document.getElementById("tf-lim").value)||0,saldo:parseFloat(document.getElementById("tf-sal").value)||0,corte:document.getElementById("tf-cor").value,pago:document.getElementById("tf-pag").value,minimo:parseFloat(document.getElementById("tf-min").value)||0};
+  if(!e.banco)return;
+  if(eid){const i=DATA.tarjetas.findIndex(t=>t.id===eid);if(i>=0)DATA.tarjetas[i]={...DATA.tarjetas[i],...e};}
+  else DATA.tarjetas.push({...e,id:uid()});
+  saveKey("tarjetas");document.getElementById("tarj-form").innerHTML="";renderTarjetas();
+}
+function editTarj(id){const t=DATA.tarjetas.find(x=>x.id===id);if(t)showTarjForm({...t,limite:String(t.limite),saldo:String(t.saldo),minimo:String(t.minimo)});}
+function delTarj(id){DATA.tarjetas=DATA.tarjetas.filter(t=>t.id!==id);saveKey("tarjetas");renderTarjetas();}
+
+// ══════════ AHORROS ══════════
+function mesesTranscurridos(fechaIni){
+  if(!fechaIni)return 0;
+  const ini=pD(fechaIni),hoy=new Date();
+  const m=(hoy.getFullYear()-ini.getFullYear())*12+hoy.getMonth()-ini.getMonth();
+  // Si aún no llegamos al día del mes, restamos 1
+  if(hoy.getDate()<ini.getDate())return Math.max(0,m-1);
+  return Math.max(0,m);
+}
+function calcAhorro(a){
+  const meses=mesesTranscurridos(a.fechaInicio);
+  const tasaMes=(a.tasa||0)/100/12;
+  let saldo=a.inicial||0;
+  let totalAportado=a.inicial||0;
+  for(let i=0;i<meses;i++){
+    saldo=saldo*(1+tasaMes); // rendimiento sobre saldo existente
+    saldo+=a.aportacion||0;  // aportación del mes
+    totalAportado+=(a.aportacion||0);
+  }
+  const rendimiento=saldo-totalAportado;
+  const rendMes=saldo*tasaMes; // rendimiento estimado del próximo mes
+  // Próxima fecha de rendimiento
+  const ini=pD(a.fechaInicio||tdy());
+  const prox=new Date(ini);
+  prox.setMonth(prox.getMonth()+meses+1);
+  return{saldo,totalAportado,rendimiento,rendMes,meses,proxFecha:prox.toISOString().slice(0,10)};
+}
+function renderAhorros(){
+  const el=document.getElementById("sec-ahorros");
+  let tSaldo=0,tInv=0,tRend=0;
+  DATA.ahorros.forEach(a=>{const c=calcAhorro(a);tSaldo+=c.saldo;tInv+=c.totalAportado;tRend+=c.rendimiento;});
+
+  let h=`<div class="sec-hdr"><h2 class="sec-title">Ahorros e Inversiones</h2><button class="btn btn-p" onclick="showAhForm()">+ Nueva</button></div>`;
+  h+=`<div class="kpi-row">
+    <div class="kpi" style="border-left:4px solid var(--green)"><span class="kpi-label">Saldo Total</span><span class="kpi-val" style="color:var(--green)">${fmtD(tSaldo)}</span></div>
+    <div class="kpi" style="border-left:4px solid var(--blue)"><span class="kpi-label">Total Invertido</span><span class="kpi-val" style="color:var(--blue)">${fmt(tInv)}</span></div>
+    <div class="kpi" style="border-left:4px solid var(--purple)"><span class="kpi-label">Rendimiento</span><span class="kpi-val" style="color:var(--purple)">${fmtD(tRend)}</span></div>
+  </div>`;
+  h+=`<div id="ah-form"></div><div class="cards-grid" style="margin-top:16px">`;
+  DATA.ahorros.forEach((a,idx)=>{
+    const c=calcAhorro(a);
+    const colors=["#2563eb","#8b5cf6","#16a34a","#f59e0b","#ec4899","#06b6d4"];
+    const co=colors[idx%colors.length];
+    const pctRend=c.totalAportado>0?(c.rendimiento/c.totalAportado):0;
+    h+=`<div class="card" style="border-top:3px solid ${co}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><h4 style="margin:0;font-size:15px">${a.inst}</h4>
+        <span style="font-size:10px;font-weight:600;background:#ede9fe;color:#6d28d9;padding:2px 8px;border-radius:4px">${a.tipo}</span></div>
+        <div style="display:flex;gap:4px"><button class="ib" onclick="editAh('${a.id}')">✏️</button><button class="ib" onclick="delAh('${a.id}')">🗑</button></div>
+      </div>
+      <div style="margin-top:14px;text-align:center;padding:12px;background:#f0fdf4;border-radius:8px">
+        <span style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px">Saldo Actual</span>
+        <span style="font-size:24px;font-weight:800;color:var(--green)">${fmtD(c.saldo)}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <div><span style="font-size:11px;color:var(--light)">Invertido</span><br><span style="font-size:13px;font-weight:600">${fmt(c.totalAportado)}</span></div>
+        <div><span style="font-size:11px;color:var(--light)">Rendimiento</span><br><span style="font-size:13px;font-weight:700;color:${co}">${fmtD(c.rendimiento)} <span style="font-size:10px">(${pct(pctRend)})</span></span></div>
+        <div><span style="font-size:11px;color:var(--light)">Tasa Anual</span><br><span style="font-size:13px;font-weight:600;color:var(--blue)">${a.tasa}%</span></div>
+        <div><span style="font-size:11px;color:var(--light)">Rend. mensual est.</span><br><span style="font-size:13px;font-weight:600">${fmtD(c.rendMes)}</span></div>
+        <div><span style="font-size:11px;color:var(--light)">Desde</span><br><span style="font-size:13px">${pD(a.fechaInicio).toLocaleDateString("es-MX",{day:"2-digit",month:"short",year:"numeric"})}</span></div>
+        <div><span style="font-size:11px;color:var(--light)">Meses transcurridos</span><br><span style="font-size:13px;font-weight:600">${c.meses}</span></div>
+        ${a.aportacion?`<div style="grid-column:1/-1"><span style="font-size:11px;color:var(--light)">Aportación mensual</span><br><span style="font-size:13px;font-weight:600">${fmt(a.aportacion)} ${a.tarjetaId?`<span style="font-size:10px;background:#dbeafe;color:#1d4ed8;padding:1px 6px;border-radius:3px">${tarjetaNombre(a.tarjetaId)}</span>`:''}  <span style="font-size:10px;color:var(--purple)">🔄 auto en Registro</span></span></div>`:""}
+      </div>
+      <div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px"><span>Próximo rendimiento</span><span>${pD(c.proxFecha).toLocaleDateString("es-MX",{day:"2-digit",month:"short"})}</span></div>
+      <div class="bar-bg" style="height:4px"><div class="bar-fill" style="width:100%;background:${co}"></div></div></div>
+    </div>`;
+  });
+  h+=`</div>`;
+  if(!DATA.ahorros.length)h+=`<p style="color:var(--light);font-size:13px;text-align:center;margin-top:24px">Sin cuentas de ahorro. Agrega tu primera cuenta.</p>`;
+  el.innerHTML=h;
+}
+function showAhForm(ed){
+  const a=ed||{inst:"",tipo:"SOFIPO",inicial:"",fechaInicio:tdy(),tasa:"",aportacion:"",tarjetaId:""};const eid=ed?a.id:null;
+  const tipos=["SOFIPO","Gubernamental","ETF","Afore","CEDE","Ahorro","Pagaré","Otro"];
+  document.getElementById("ah-form").innerHTML=`<div class="card" style="margin-top:12px;animation:fi .2s ease"><div class="fg">
+    <div class="fw"><span class="lbl">Institución</span><input class="inp" id="af-inst" value="${a.inst}" placeholder="Ej: Supertasas, CETES..."></div>
+    <div class="fw"><span class="lbl">Tipo</span><select class="inp" id="af-tipo">${tipos.map(t=>`<option ${t===a.tipo?"selected":""}>${t}</option>`).join("")}</select></div>
+    <div class="fw"><span class="lbl">Saldo Inicial $</span><input type="number" class="inp" id="af-ini" value="${a.inicial}" step="0.01"></div>
+    <div class="fw"><span class="lbl">Fecha de inicio</span><input type="date" class="inp" id="af-fecha" value="${a.fechaInicio||tdy()}"></div>
+    <div class="fw"><span class="lbl">Tasa Anual %</span><input type="number" class="inp" id="af-tasa" value="${a.tasa}" step="0.1"></div>
+    <div class="fw"><span class="lbl">Aportación mensual $ (opc.)</span><input type="number" class="inp" id="af-apo" value="${a.aportacion||""}" placeholder="0 = sin aportación"></div>
+    <div class="fw"><span class="lbl">💳 Tarjeta de aportación</span><select class="inp" id="af-tarj">${tarjetaOptions(a.tarjetaId||"")}</select></div>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:8px">💡 El saldo se actualiza cada mes con interés compuesto. Si pones aportación, se crea una operación programada vinculada a la tarjeta seleccionada.</p>
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveAh('${eid||""}')">${eid?"Actualizar":"Guardar"}</button><button class="btn btn-g" onclick="document.getElementById('ah-form').innerHTML=''">Cancelar</button></div></div>`;
+}
+function saveAh(eid){
+  const tarjId=document.getElementById("af-tarj").value;
+  const tarj=DATA.tarjetas.find(t=>t.id===tarjId);
+  const metodo=tarj?(tarj.tipo==="Crédito"?"Crédito":"Débito"):"Transferencia";
+  const e={inst:document.getElementById("af-inst").value,tipo:document.getElementById("af-tipo").value,inicial:parseFloat(document.getElementById("af-ini").value)||0,fechaInicio:document.getElementById("af-fecha").value||tdy(),tasa:parseFloat(document.getElementById("af-tasa").value)||0,aportacion:parseFloat(document.getElementById("af-apo").value)||0,tarjetaId:tarjId,metodo};
+  if(!e.inst)return;
+  const id=eid||uid();
+  const recTag="ahorro-"+id;
+  const existingRec=DATA.recurrentes.findIndex(r=>r.tag===recTag);
+  if(eid){
+    const i=DATA.ahorros.findIndex(a=>a.id===eid);
+    if(i>=0)DATA.ahorros[i]={...DATA.ahorros[i],...e};
+  } else {
+    DATA.ahorros.push({...e,id});
+  }
+  if(e.aportacion>0){
+    const recData={id:existingRec>=0?DATA.recurrentes[existingRec].id:uid(),tag:recTag,tipo:"Gasto",categoria:"Ahorro/Inversión",desc:"Aportación "+e.inst,metodo,monto:e.aportacion,tarjetaId:tarjId,metaId:"",freq:"mensual",customDays:0,fechaInicio:e.fechaInicio,fechaFin:"",ultimaGen:e.fechaInicio,activa:true};
+    if(existingRec>=0)DATA.recurrentes[existingRec]=recData;
+    else DATA.recurrentes.push(recData);
+    toast("Aportación programada"+(tarj?" con "+tarj.banco:""));
+  } else if(existingRec>=0){
+    DATA.recurrentes.splice(existingRec,1);
+  }
+  saveKey("ahorros");saveKey("recurrentes");
+  document.getElementById("ah-form").innerHTML="";renderAhorros();
+}
+function editAh(id){const a=DATA.ahorros.find(x=>x.id===id);if(a)showAhForm({...a,inicial:String(a.inicial),aportacion:String(a.aportacion||""),tasa:String(a.tasa),tarjetaId:a.tarjetaId||""});}
+function delAh(id){
+  // También eliminar recurrente vinculada
+  const recTag="ahorro-"+id;
+  DATA.recurrentes=DATA.recurrentes.filter(r=>r.tag!==recTag);
+  DATA.ahorros=DATA.ahorros.filter(a=>a.id!==id);
+  saveKey("ahorros");saveKey("recurrentes");renderAhorros();
+}
+
+// ══════════ METAS ══════════
+function renderMetas(){
+  const el=document.getElementById("sec-metas");
+  const mR=f=>{if(!f)return 0;const d=pD(f),n=new Date();return Math.max(0,(d.getFullYear()-n.getFullYear())*12+d.getMonth()-n.getMonth());};
+  const GC=["#2563eb","#8b5cf6","#ec4899","#f59e0b","#16a34a","#06b6d4","#e11d48","#84cc16"];
+  let h=`<div class="sec-hdr"><h2 class="sec-title">Metas Financieras</h2><button class="btn btn-p" onclick="showMetaForm()">+ Nueva</button></div>`;
+  h+=`<div id="meta-form"></div><div class="cards-grid" style="margin-top:16px">`;
+  DATA.metas.forEach((m,idx)=>{
+    const av=m.objetivo>0?Math.min(m.actual/m.objetivo,1):0;const fa=Math.max(0,m.objetivo-m.actual);
+    const mr=mR(m.fechaObj);const mn=mr>0?fa/mr:fa;const co=GC[idx%GC.length];
+    h+=`<div class="card" style="border-top:3px solid ${co};overflow:hidden">
+      ${av>=1?'<div style="position:absolute;top:8px;right:8px;font-size:20px">🎉</div>':""}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start"><h4 style="margin:0;font-size:14px;max-width:80%">${m.nombre}</h4>
+      <div style="display:flex;gap:4px"><button class="ib" onclick="editMeta('${m.id}')">✏️</button><button class="ib" onclick="delMeta('${m.id}')">🗑</button></div></div>
+      <div style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${fmt(m.actual)} de ${fmt(m.objetivo)}</span><span style="font-weight:700;color:${co}">${pct(av)}</span></div>
+      <div class="bar-bg" style="height:10px;border-radius:5px"><div style="height:100%;border-radius:5px;background:linear-gradient(90deg,${co},${co}cc);width:${av*100}%;transition:width .5s"></div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <div><span style="font-size:11px;color:var(--light)">Faltante</span><br><span style="font-size:14px;font-weight:600">${fmt(fa)}</span></div>
+        ${m.fechaObj?`<div><span style="font-size:11px;color:var(--light)">Fecha</span><br><span style="font-size:13px">${pD(m.fechaObj).toLocaleDateString("es-MX",{month:"short",year:"numeric"})}</span></div>`:""}
+        <div><span style="font-size:11px;color:var(--light)">Meses</span><br><span style="font-size:14px;font-weight:600">${mr}</span></div>
+        <div><span style="font-size:11px;color:var(--light)">Ahorro/mes</span><br><span style="font-size:14px;font-weight:700;color:${co}">${fmt(mn)}</span></div>
+      </div></div>`;
+  });
+  h+=`</div>`;el.innerHTML=h;
+}
+function showMetaForm(ed){
+  const m=ed||{nombre:"",objetivo:"",fechaObj:"",actual:""};const eid=ed?m.id:null;
+  document.getElementById("meta-form").innerHTML=`<div class="card" style="animation:fi .2s ease"><div class="fg">
+    <div class="fw full"><span class="lbl">Nombre</span><input class="inp" id="mf-nom" value="${m.nombre}"></div>
+    <div class="fw"><span class="lbl">Objetivo $</span><input type="number" class="inp" id="mf-obj" value="${m.objetivo}"></div>
+    <div class="fw"><span class="lbl">Fecha objetivo</span><input type="date" class="inp" id="mf-fec" value="${m.fechaObj}"></div>
+    <div class="fw"><span class="lbl">Ahorro actual $</span><input type="number" class="inp" id="mf-act" value="${m.actual}"></div>
+  </div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveMeta('${eid||""}')">${eid?"Actualizar":"Guardar"}</button><button class="btn btn-g" onclick="document.getElementById('meta-form').innerHTML=''">Cancelar</button></div></div>`;
+}
+function saveMeta(eid){
+  const e={nombre:document.getElementById("mf-nom").value,objetivo:parseFloat(document.getElementById("mf-obj").value)||0,fechaObj:document.getElementById("mf-fec").value,actual:parseFloat(document.getElementById("mf-act").value)||0};
+  if(!e.nombre||!e.objetivo)return;
+  if(eid){const i=DATA.metas.findIndex(m=>m.id===eid);if(i>=0)DATA.metas[i]={...DATA.metas[i],...e};}
+  else DATA.metas.push({...e,id:uid()});
+  saveKey("metas");document.getElementById("meta-form").innerHTML="";renderMetas();
+}
+function editMeta(id){const m=DATA.metas.find(x=>x.id===id);if(m)showMetaForm({...m,objetivo:String(m.objetivo),actual:String(m.actual)});}
+function delMeta(id){DATA.metas=DATA.metas.filter(m=>m.id!==id);saveKey("metas");renderMetas();}
+
+// Focus PIN on load
+document.getElementById("pin-input").focus();
 </script>
 </body>
 </html>
